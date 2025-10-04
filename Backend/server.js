@@ -1,35 +1,41 @@
-// ✅ Load environment variables at the very top
+// server.js
 import 'dotenv/config';
-
 import express from "express";
 import cors from "cors";
-import passport from "passport";
 import session from "express-session";
+import passport from "passport";
 
 import { initDB } from "./db.js";
-
 import authRoutes from "./routes/auth.js";
 import rideRoutes from "./routes/rides.js";
 import userRoutes from "./routes/users.js";
 
-// Debug environment variables
-console.log("GOOGLE_CLIENT_ID from .env:", process.env.GOOGLE_CLIENT_ID);
-console.log("GOOGLE_CLIENT_SECRET from .env:", process.env.GOOGLE_CLIENT_SECRET);
-
 const app = express();
 app.use(express.json());
 
-// ✅ allow frontend (5173) to call backend (5000)
+// ---------- CORS ----------
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  process.env.FRONTEND_URL || "https://willowy-haupia-6fb17a.netlify.app", // deployed frontend
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: function(origin, callback) {
+      console.log("Request origin:", origin);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked for origin: ${origin}`));
+      }
+    },
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
   })
 );
 
-// Optional: session required for passport (not strictly needed if using JWT)
+// ---------- SESSION ----------
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "supersecret",
@@ -41,15 +47,14 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Initialize DB
+// ---------- DATABASE ----------
 await initDB();
 
-// Routes
+// ---------- ROUTES ----------
 app.use("/auth", authRoutes);
 app.use("/rides", rideRoutes);
 app.use("/users", userRoutes);
 
-// Start server
-app.listen(5000, () =>
-  console.log("🚗 Backend running at http://localhost:5000")
-);
+// ---------- PORT ----------
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚗 Backend running at port ${PORT}`));
