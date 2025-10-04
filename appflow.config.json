@@ -1,8 +1,9 @@
 {
-  "appId": "com.jemeli.carpool",
-  "name": "Carpool App",
+  "app_id": "3a67af69",
+  "name": "carpool-app",
   "type": "capacitor",
-  "webDir": "dist",
-  "npmClient": "npm",
-  "projectDir": "carpool-app"
+  "root": "carpool-app",
+  "integrations": {
+    "capacitor": {}
+  }
 }
