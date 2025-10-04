@@ -2,6 +2,6 @@
 <resources>
     <string name="app_name">car-pool</string>
     <string name="title_activity_main">car-pool</string>
-    <string name="package_name">com.carpool.app</string>
-    <string name="custom_url_scheme">com.carpool.app</string>
+    <string name="package_name">com.carpool.com</string>
+    <string name="custom_url_scheme">com.carpool.com</string>
 </resources>

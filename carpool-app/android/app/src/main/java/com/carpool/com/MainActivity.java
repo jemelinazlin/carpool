@@ -1,4 +1,4 @@
-package com.carpool.app;
+package com.carpool.com;
 
 import com.getcapacitor.BridgeActivity;
 

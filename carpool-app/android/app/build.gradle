@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.carpool.app"
+    namespace "com.carpool.com"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.carpool.app"
+        applicationId "com.carpool.com"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
