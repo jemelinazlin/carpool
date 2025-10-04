@@ -1,93 +1,101 @@
-// AuthContext.js
-import { createContext, useState, useEffect } from "react";
-import axios from "axios";
+// ✅ routes/auth.js
+import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import passport from "passport";
 
-export const AuthContext = createContext();
+import { getDB } from "../db.js";
+import { JWT_SECRET, verifyToken } from "../middleware/auth.js";
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+const router = express.Router();
 
-  // ✅ Get API URL from Vite env
-  const API_URL = import.meta.env.VITE_API_URL;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const GOOGLE_CALLBACK_URL = process.env.GOOGLE_CALLBACK_URL || `${process.env.BACKEND_URL || 'http://localhost:5000'}/auth/google/callback`;
 
-  useEffect(() => {
-    const savedToken = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
+// ---------- LOCAL AUTH ----------
+// Register
+router.post("/register", async (req, res) => {
+  const { name, email, password, phone } = req.body;
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const result = await getDB().run(
+      "INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)",
+      [name, email, hashedPassword, phone]
+    );
 
-    if (savedToken && savedUser) {
-      setToken(savedToken);
-      setUser(JSON.parse(savedUser));
-    }
-    setLoading(false);
-  }, []);
+    const token = jwt.sign({ id: result.lastID, email }, JWT_SECRET, { expiresIn: "1h" });
 
-  // 🔹 Login
-  const login = async (email, password) => {
-    try {
-      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
-      const loginToken = res.data.token;
-      const loginUser = res.data.user;
+    res.json({
+      token,
+      user: { id: result.lastID, name, email, phone }
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Failed to register", details: err.message });
+  }
+});
 
-      setToken(loginToken);
-      setUser(loginUser);
+// Login
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await getDB().get("SELECT * FROM users WHERE email = ?", [email]);
+    if (!user) return res.status(400).json({ error: "User not found" });
 
-      localStorage.setItem("token", loginToken);
-      localStorage.setItem("user", JSON.stringify(loginUser));
+    const validPass = await bcrypt.compare(password, user.password);
+    if (!validPass) return res.status(400).json({ error: "Invalid password" });
 
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: err.response?.data?.error || "Login failed" };
-    }
-  };
+    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1h" });
 
-  // 🔹 Register
-  const register = async (name, email, phone, password) => {
-    try {
-      const res = await axios.post(`${API_URL}/auth/register`, {
-        name,
-        email,
-        phone,
-        password,
-      });
+    res.json({
+      token,
+      user: { id: user.id, name: user.name, email: user.email, phone: user.phone }
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Login failed", details: err.message });
+  }
+});
 
-      // Auto-login after register
-      const newToken = res.data.token;
-      const newUser = res.data.user;
-
-      if (newToken && newUser) {
-        setToken(newToken);
-        setUser(newUser);
-        localStorage.setItem("token", newToken);
-        localStorage.setItem("user", JSON.stringify(newUser));
-      }
-
-      return { success: true };
-    } catch (err) {
-      return { success: false, error: err.response?.data?.error || "Registration failed" };
-    }
-  };
-
-  // 🔹 Google Login
-  const loginWithGoogle = () => {
-    window.location.href = `${API_URL}/auth/google`; 
-    // this now works for both localhost and deployed backend
-  };
-
-  // 🔹 Logout
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-  };
-
-  return (
-    <AuthContext.Provider
-      value={{ user, token, login, register, loginWithGoogle, logout, loading }}
-    >
-      {children}
-    </AuthContext.Provider>
+// Get logged-in user
+router.get("/me", verifyToken, async (req, res) => {
+  const user = await getDB().get(
+    "SELECT id, name, email, phone FROM users WHERE id = ?",
+    [req.user.id]
   );
-};
+  res.json(user);
+});
+
+// ---------- GOOGLE AUTH (JWT) ----------
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: GOOGLE_CALLBACK_URL,
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        let user = await getDB().get("SELECT * FROM users WHERE email = ?", [profile.emails[0].value]);
+        if (!user) {
+          const result = await getDB().run(
+            "INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)",
+            [profile.displayName, profile.emails[0].value, "", ""]
+          );
+          user = { id: result.lastID, name: profile.displayName, email: profile.emails[0].value };
+        }
+        done(null, user);
+      } catch (err) {
+        done(err, null);
+      }
+    }
+  )
+);
+
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get("/google/callback", passport.authenticate("google", { session: false, failureRedirect: `${FRONTEND_URL}/login` }), (req, res) => {
+  const token = jwt.sign({ id: req.user.id, email: req.user.email }, JWT_SECRET, { expiresIn: "1h" });
+  res.redirect(`${FRONTEND_URL}/login?token=${token}`);
+});
+
+export default router;
