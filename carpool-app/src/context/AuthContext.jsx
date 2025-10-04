@@ -1,3 +1,4 @@
+// AuthContext.js
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
@@ -6,9 +7,8 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true); // Track initialization
+  const [loading, setLoading] = useState(true);
 
-  // Load user/token from localStorage on mount
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
@@ -17,22 +17,15 @@ export const AuthProvider = ({ children }) => {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
     }
-
-    setLoading(false); // Done loading
-    console.log("Auth initialized:", { token: savedToken, user: savedUser });
+    setLoading(false);
   }, []);
 
-  // Login function
+  // 🔹 Login
   const login = async (email, password) => {
     try {
       const res = await axios.post("http://localhost:5000/auth/login", { email, password });
-
       const loginToken = res.data.token;
       const loginUser = res.data.user;
-
-      if (!loginToken || !loginUser) {
-        throw new Error("Login response missing token or user");
-      }
 
       setToken(loginToken);
       setUser(loginUser);
@@ -42,12 +35,44 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true };
     } catch (err) {
-      console.error("Login failed:", err.response || err);
-      return { success: false, error: err.response?.data?.error || err.message };
+      return { success: false, error: err.response?.data?.error || "Login failed" };
     }
   };
 
-  // Logout function
+  // 🔹 Register
+  const register = async (name, email, phone, password) => {
+    try {
+      const res = await axios.post("http://localhost:5000/auth/register", {
+        name,
+        email,
+        phone,
+        password,
+      });
+
+      // Option A: Auto-login after register
+      const newToken = res.data.token;
+      const newUser = res.data.user;
+
+      if (newToken && newUser) {
+        setToken(newToken);
+        setUser(newUser);
+        localStorage.setItem("token", newToken);
+        localStorage.setItem("user", JSON.stringify(newUser));
+      }
+
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err.response?.data?.error || "Registration failed" };
+    }
+  };
+
+  // 🔹 Google Login (placeholder, needs backend support)
+  const loginWithGoogle = () => {
+    window.location.href = "http://localhost:5000/auth/google"; 
+    // this should redirect to your backend Google OAuth flow
+  };
+
+  // 🔹 Logout
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -56,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, login, register, loginWithGoogle, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );

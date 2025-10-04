@@ -1,6 +1,6 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -10,6 +10,7 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { register } = useContext(AuthContext);
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -19,16 +20,12 @@ export default function Register() {
       return;
     }
 
-    try {
-      await axios.post("http://localhost:5000/auth/register", {
-        name,
-        email,
-        phone,
-        password,
-      });
-      navigate("/login");
-    } catch (err) {
-      setError("Failed to register. Email may already exist.");
+    const res = await register(name, email, phone, password);
+
+    if (res.success) {
+      navigate("/"); // redirect after register
+    } else {
+      setError(res.error);
     }
   };
 
@@ -42,55 +39,22 @@ export default function Register() {
 
         {error && <p className="text-red-500 text-center">{error}</p>}
 
-        <input
-          type="text"
-          placeholder="Full Name"
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} required className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none" />
+        <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none" />
+        <input type="text" placeholder="Phone (optional)" value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none" />
+        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none" />
+        <input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none" />
 
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-
-        <input
-          type="text"
-          placeholder="Phone (optional)"
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-
-        <input
-          type="password"
-          placeholder="Confirm Password"
-          className="w-full p-3 rounded-xl border border-gray-300 focus:outline-none"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
+        <button type="submit" className="w-full bg-[#00BFA6] hover:bg-[#009e87] text-white py-3 rounded-xl font-semibold">
+          Register
+        </button>
 
         <button
-          type="submit"
-          className="w-full bg-[#00BFA6] hover:bg-[#009e87] text-white py-3 rounded-xl font-semibold"
+          type="button"
+          onClick={() => window.location.href = "http://localhost:5000/auth/google"}
+          className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-semibold"
         >
-          Register
+          Continue with Google
         </button>
 
         <p className="text-center text-gray-300">
