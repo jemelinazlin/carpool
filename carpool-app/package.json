@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host --port 5173",
     "build": "vite build",
+    "appflow:build": "npm run build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

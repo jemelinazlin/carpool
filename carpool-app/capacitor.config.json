@@ -1,5 +1,6 @@
 {
-  "appId": "com.carpool.com",
-  "appName": "car-pool",
-  "webDir": "dist"
+  "appId": "com.jemeli.carpool",
+  "appName": "Carpool App",
+  "webDir": "dist",
+  "bundledWebRuntime": false
 }
