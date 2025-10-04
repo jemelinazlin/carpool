@@ -2,13 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { MapPin, Calendar } from "lucide-react";
 import axios from "axios";
-import RideDetails from "./RideDetails";
+import RideCard from "../components/RideCard";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 export default function FindRide() {
-  const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { user, token, loading } = useContext(AuthContext);
 
   const [pickup, setPickup] = useState("");
   const [destination, setDestination] = useState("");
@@ -17,16 +16,15 @@ export default function FindRide() {
   const [rides, setRides] = useState([]);
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
+  const [toast, setToast] = useState("");
 
   const API_URL = `${import.meta.env.VITE_API_URL}/rides`;
 
+  // ---------- Loading / Auth ----------
+  if (loading) return <div className="text-center mt-6">Loading...</div>;
+  if (!user || !token) return <Navigate to="/login" replace />;
 
-  useEffect(() => {
-    if (!user) navigate("/login", { state: { from: "/find" } });
-  }, [user, navigate]);
-
-  if (!user) return null;
-
+  // ---------- Fetch Suggestions ----------
   const fetchSuggestions = async (query, setSuggestions) => {
     if (!query || query.length < 3) return setSuggestions([]);
     try {
@@ -34,8 +32,7 @@ export default function FindRide() {
         params: { q: query, format: "json", addressdetails: 1, limit: 5 },
       });
       setSuggestions(res.data);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setSuggestions([]);
     }
   };
@@ -43,27 +40,51 @@ export default function FindRide() {
   useEffect(() => { if (pickup) fetchSuggestions(pickup, setPickupSuggestions); }, [pickup]);
   useEffect(() => { if (destination) fetchSuggestions(destination, setDestinationSuggestions); }, [destination]);
 
+  // ---------- Fetch Rides ----------
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSearching(true);
     try {
-      const token = localStorage.getItem("token");
       const res = await axios.get(API_URL, {
-        params: { origin: pickup, destination, date },
         headers: { Authorization: `Bearer ${token}` },
+        params: {
+          origin: pickup || undefined,
+          destination: destination || undefined,
+          date: date || undefined,
+        },
       });
       setRides(res.data);
     } catch (err) {
       console.error(err);
-      alert("Failed to fetch rides. Are you logged in?");
+      alert("Failed to fetch rides.");
     } finally {
       setSearching(false);
     }
   };
 
+  // ---------- Handle Booking Toast ----------
+  const handleBooked = (rideId, seats) => {
+    setRides(prev => prev.map(r => r.id === rideId ? { ...r, seats: r.seats - seats } : r));
+    setToast(`✅ Successfully booked ${seats} ${seats === 1 ? "seat" : "seats"}!`);
+    setTimeout(() => setToast(""), 3000);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-teal-50 to-white dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-200 p-4 md:p-8">
-      {/* Hero Section */}
+      
+      {/* Toast */}
+      {toast && (
+        <motion.div
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+        >
+          {toast}
+        </motion.div>
+      )}
+
+      {/* Hero */}
       <motion.div
         className="w-full bg-teal-500 dark:bg-teal-700 text-white py-16 px-4 text-center rounded-b-3xl shadow-lg"
         initial={{ opacity: 0 }}
@@ -72,11 +93,11 @@ export default function FindRide() {
       >
         <h1 className="text-4xl md:text-5xl font-extrabold mb-2">Find Your Ride 🚌</h1>
         <p className="text-md md:text-lg max-w-xl mx-auto">
-          Search for rides going your way and join a ride quickly and safely.
+          Search for rides going your way and book a seat instantly!
         </p>
       </motion.div>
 
-      {/* Search Form Card */}
+      {/* Search Form */}
       <motion.div
         className="relative -mt-12 w-full max-w-xl mx-auto bg-white dark:bg-gray-800 rounded-3xl shadow-xl p-6 md:p-8"
         initial={{ opacity: 0, y: 50 }}
@@ -84,6 +105,7 @@ export default function FindRide() {
         transition={{ delay: 0.2 }}
       >
         <motion.form className="space-y-5" onSubmit={handleSubmit}>
+          
           {/* Pickup */}
           <div className="flex flex-col relative">
             <div className="flex items-center space-x-3">
@@ -147,7 +169,6 @@ export default function FindRide() {
             />
           </div>
 
-          {/* Submit Button */}
           <motion.button
             type="submit"
             whileHover={{ scale: 1.03 }}
@@ -169,14 +190,7 @@ export default function FindRide() {
       >
         {rides.length > 0 ? (
           rides.map((ride) => (
-            <motion.div
-              key={ride.id}
-              className="w-full bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md hover:shadow-xl transition"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <RideDetails ride={ride} />
-            </motion.div>
+            <RideCard key={ride.id} ride={ride} token={token} onBooked={handleBooked} />
           ))
         ) : (
           <p className="col-span-full text-center text-gray-500 dark:text-gray-400 font-medium mt-6">

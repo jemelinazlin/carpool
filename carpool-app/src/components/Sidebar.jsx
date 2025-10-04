@@ -7,12 +7,13 @@ export default function Sidebar({ isOpen, onClose }) {
   const location = useLocation();
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
+  // Sidebar nav items — only static routes
   const navItems = [
     { name: "Home", path: "/", icon: <Home className="w-5 h-5" /> },
     { name: "Offer Ride", path: "/offer", icon: <MapPin className="w-5 h-5" /> },
     { name: "Find Ride", path: "/find", icon: <MapPin className="w-5 h-5" /> },
     { name: "Profile", path: "/profile", icon: <User className="w-5 h-5" /> },
-    { name: "Ride Details", path: "/ridedetails", icon: <User className="w-5 h-5" /> },
+    // Removed Ride Details — it needs a dynamic ID
   ];
 
   return (
@@ -39,6 +40,7 @@ export default function Sidebar({ isOpen, onClose }) {
           <button
             className="md:hidden ml-auto text-gray-800 dark:text-gray-100 hover:text-teal-500 transition"
             onClick={onClose}
+            aria-label="Close sidebar"
           >
             <X className="w-6 h-6" />
           </button>
