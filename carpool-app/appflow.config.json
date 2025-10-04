@@ -1,0 +1,9 @@
+{
+  "appId": "com.yourcompany.carpool",
+  "name": "Carpool App",
+  "type": "capacitor",
+  "bundledWebRuntime": false,
+  "webDir": "dist",
+  "cordova": {},
+  "npmClient": "npm"
+}
