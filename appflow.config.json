@@ -4,6 +4,5 @@
   "type": "capacitor",
   "webDir": "dist",
   "npmClient": "npm",
-  "projectDir": "carpool-app",
-  "cordova": {}
+  "projectDir": "carpool-app"
 }
