@@ -13,6 +13,9 @@ export default function Login() {
   // Redirect back to where user came from, or home
   const from = location.state?.from?.pathname || "/";
 
+  // ✅ Backend URL (use .env: VITE_API_URL)
+  const API_URL = import.meta.env.VITE_API_URL;
+
   // ✅ Check if redirected from Google with ?token=...
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -20,16 +23,13 @@ export default function Login() {
 
     if (token) {
       try {
-        // Save token in localStorage
         localStorage.setItem("token", token);
 
-        // Optionally decode token payload
         const payload = JSON.parse(atob(token.split(".")[1]));
         const user = { id: payload.id, email: payload.email };
 
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Redirect to previous page
         navigate(from, { replace: true });
       } catch (err) {
         console.error("Error handling Google login token:", err);
@@ -87,7 +87,7 @@ export default function Login() {
         <button
           type="button"
           onClick={() =>
-            (window.location.href = "http://localhost:5000/auth/google")
+            (window.location.href = `${API_URL}/auth/google`)
           }
           className="w-full bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-semibold"
         >

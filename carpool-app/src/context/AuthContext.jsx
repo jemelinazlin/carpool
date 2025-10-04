@@ -9,6 +9,9 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Get API URL from Vite env
+  const API_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
@@ -23,7 +26,7 @@ export const AuthProvider = ({ children }) => {
   // 🔹 Login
   const login = async (email, password) => {
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", { email, password });
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
       const loginToken = res.data.token;
       const loginUser = res.data.user;
 
@@ -42,14 +45,14 @@ export const AuthProvider = ({ children }) => {
   // 🔹 Register
   const register = async (name, email, phone, password) => {
     try {
-      const res = await axios.post("http://localhost:5000/auth/register", {
+      const res = await axios.post(`${API_URL}/auth/register`, {
         name,
         email,
         phone,
         password,
       });
 
-      // Option A: Auto-login after register
+      // Auto-login after register
       const newToken = res.data.token;
       const newUser = res.data.user;
 
@@ -66,10 +69,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // 🔹 Google Login (placeholder, needs backend support)
+  // 🔹 Google Login
   const loginWithGoogle = () => {
-    window.location.href = "http://localhost:5000/auth/google"; 
-    // this should redirect to your backend Google OAuth flow
+    window.location.href = `${API_URL}/auth/google`; 
+    // this now works for both localhost and deployed backend
   };
 
   // 🔹 Logout
@@ -81,7 +84,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, loginWithGoogle, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, token, login, register, loginWithGoogle, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

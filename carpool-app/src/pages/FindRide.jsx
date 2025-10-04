@@ -18,7 +18,8 @@ export default function FindRide() {
   const [pickupSuggestions, setPickupSuggestions] = useState([]);
   const [destinationSuggestions, setDestinationSuggestions] = useState([]);
 
-  const API_URL = "http://localhost:5000/rides";
+  const API_URL = `${import.meta.env.VITE_API_URL}/rides`;
+
 
   useEffect(() => {
     if (!user) navigate("/login", { state: { from: "/find" } });

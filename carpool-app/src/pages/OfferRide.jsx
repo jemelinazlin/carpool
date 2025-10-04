@@ -16,7 +16,8 @@ export default function OfferRide() {
   const [rides, setRides] = useState([]);
   const [success, setSuccess] = useState(false);
 
-  const API_URL = "http://localhost:5000/rides";
+  // ✅ Use environment variable for API
+  const API_URL = `${import.meta.env.VITE_API_URL}/rides`;
 
   useEffect(() => {
     if (!token) return;
@@ -92,9 +93,10 @@ export default function OfferRide() {
           >
             Register
           </Link>
+          {/* ✅ Google login now uses backend from env variable */}
           <button
             onClick={() =>
-              (window.location.href = "http://localhost:5000/auth/google")
+              (window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`)
             }
             className="block w-full bg-red-500 dark:bg-red-600 text-white p-2 rounded hover:bg-red-600 dark:hover:bg-red-700 transition"
           >
