@@ -9,12 +9,25 @@ import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// ---------- CONFIG ----------
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:4173";
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
+// ---------- CONFIG (Environment Detection) ----------
+
+// Detect if running locally
+const isProduction = process.env.NODE_ENV === "production";
+
+// Frontend URL (React)
+const FRONTEND_URL = isProduction
+  ? process.env.FRONTEND_URL || "https://willowy-haupia-6fb17a.netlify.app"
+  : "http://localhost:5174"; // ✅ Your local Vite port
+
+// Backend URL (Express)
+const BACKEND_URL = isProduction
+  ? process.env.BACKEND_URL || "https://carpool-1-wrch.onrender.com"
+  : "http://localhost:5000";
+
+// Google OAuth callback
 const GOOGLE_CALLBACK_URL = `${BACKEND_URL}/auth/google/callback`;
 
-// ✅ JWT Secret from env
+// JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 router.use((req, res, next) => {
@@ -80,6 +93,7 @@ router.get("/me", verifyToken, async (req, res) => {
 });
 
 // ---------- GOOGLE AUTH ----------
+
 passport.use(
   new GoogleStrategy(
     {
@@ -114,13 +128,22 @@ passport.use(
   )
 );
 
+// Google login route
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
+// Google callback route
 router.get(
   "/google/callback",
-  passport.authenticate("google", { session: false, failureRedirect: `${FRONTEND_URL}/login` }),
+  passport.authenticate("google", {
+    session: false,
+    failureRedirect: `${FRONTEND_URL}/login`,
+  }),
   (req, res) => {
-    const token = jwt.sign({ id: req.user.id, email: req.user.email }, JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: req.user.id, email: req.user.email },
+      JWT_SECRET,
+      { expiresIn: "1h" }
+    );
     res.redirect(`${FRONTEND_URL}/login?token=${token}`);
   }
 );

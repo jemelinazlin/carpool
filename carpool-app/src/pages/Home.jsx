@@ -1,9 +1,11 @@
+// src/pages/Home.jsx
+import { useState } from "react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import FeatureCard from "../components/FeatureCard";
 import StatsCounter from "../components/StatsCounter";
 import SearchBar from "../components/SearchBar";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+
 
 export default function Home() {
   const [from, setFrom] = useState("");
@@ -11,117 +13,290 @@ export default function Home() {
 
   const handleSearch = () => {
     if (!from || !to) {
-      alert("Please select both origin and destination.");
+      alert("Please enter both origin and destination.");
       return;
     }
+    // keep behavior same as existing app — don't change fetching
     alert(`Searching rides from ${from} to ${to}`);
   };
 
-  // External image URLs
-  const driversImg = "https://th.bing.com/th/id/OIP.gMoc6n-RKMWTyGluvk6nzgHaE6?w=251&h=180&c=7&r=0&o=7&cb=12&dpr=1.5&pid=1.7&rm=3";
-  const passengersImg = "data:image/webp;base64,UklGRuQ+AABXRUJQVlA4INg+AADw+QCdASp+AQ4BPp1Amkmlo6ItK/Zs4aATiU2jJg0Iyga4HvJhJ7h6YGQ/h+dP1x6wy/97fb/oQe0d7D0+bi3nSNPX3qrG65dOoPhz5u/p2jBm3tM+3qc7+78K/m//ueoc/L5k+hB70/hfP8+188v4H/T+wJ5peC7+H/7fsBf1P/Y+sN/u+VT7A9hHph/vF7RThK31IKpAmSgcUNIhCwXTXuctUU9lKAllush7YGU73WBZLCyD1+zocqoKTFiphy7GOTAfb04MaIJrFfbrGWG/z15udx6miHYK3o1zbE+WUM2lgjTYUzmiN38ZNGn3ts4c9Z67Xc12zci/IevCFDug3NCZXkeSNZKDx+amfrdf1ktR9z5dRwnpkPA9hGTAGPbiAoDu9tKlEQxDNxUiXpdvAlwlgekZa1IcGEBlWbFQuCgduQucKdjWUySIWQ8c3jH4IvqPb+EHDmqAfvEuOSQWSJIRB6LVgfmkdI74Ie6NX2OTx7mCwnKbmeZLItjTnApMgws5iOp15sxbwenftXhoM7nhjyoVpmomj/4kPQj5grDPq4eILEXiJJTszpt5s6qu9SJ4IaYI/Ui4sDLrDLr+k4o/gPFrUlSh8E41t/FUltorkz/0AUpt6f/I2IDktT1tS1ZlLFY0nuV+XxfIDUTe04dRY8t/t0RmmV4AYQbSjXs/M1D5BJ7gQpUetI4HqzR+O/00j+0O0hUdzxtr/Cj1W26R7h8VHmeRS9j/KtIkLWVt7BSSBHhDNm47bvuXiaG0+GKAmTaGhhyxcp9DbibEx+zchD3kHTYaTiro1ffYUrbVZmA0hdx1/rzCSuIqBeYdNg4u4ygpdI1o9126uL1QKxX+QXWPEKsWCoQ4uze6vyb8KA7/0gYsvul/7blAQV0sGivxFZ4rFMvGggKmYoeOijEPTH058xoMOxlXWIvHhuSoewrjj0Wnqii1cpqvShxn5+TYTptfImugdNbE0cRwKOkoPZjfzseC+9C65nTCrKZu4MD0bmOHhtB1WOqY7Eqefwi7MpLLTvAqPsPig8E/fb/eVoExU9SAL8uqTL2mAx7oFYaLrYjO5TsYW/QSiI5/jPGpVqvDPEKIMBaCqATPUusMI+8Ksbtwk0su4YN1rq0/0IjoPs8qPkC06xJnUkgr6LBF1XuPep0aD9at1i90XHIEaXQdPuvPTHcf8dtnSIoVb0Ol58PE53ITVFEab70meCol2eutFOX3ELng0JBlzw2Au6lH4xOcDoXF9fZNKlsqfgrgIpk6f8eeLFPodI+RhHllxBV3sEDUpScgpSFfPTLl/6bEFa/cq8P5ny3+QyRTPcCcOB6K783OB3djwwi/ba4OgvDCKrKNA4GVaAzytR/0cpPhbz1AClGvtMzdaAXY0JWub58Auc7N+j8bRfDprPzlWUEJYqEbWHdaBNrdyuTpLsNqpjiEhfmzqQDrSn6jdzT/IrvBPiPu6cr3cyc+ZlqunGboJOJs2/ymz0fJnAvl7JzDsztYhrKEGyNjayB7uslqy8QlXh0n+tRElX8M34cz3rl8K8jfoVfF+VHa5Ss/1oe0I+eD6Zlkbofor1rB35cJbVm54sff0LzU7myc+75pdM/2kIUAOAPKUbBMTueUsG0wRe1mye0NDZ0hgehP1W5jBtfgF0S8aIGwSZSlsnbgrQh124OBKLNDil61l5Duh+eQvqyQG+LhRFdtf0DAZqJnm0MDcABluasvM6u753te3mIA8W+sAeDkDgxuNRJMCUSvsg7B/elB/ZAs7sm02f8GLy2fuPUJioFgvPoCuyZNO6CSRV4cRcXJdRA9CcCl1g8Ev9yo7bP9L2m3/VkFMNe7z7wwvxdezl5feCt1Sad7UdlyayoPYPf+Qy6VzYn00yjdtZpU3mhlrig+9qNSo+/66YUF7U4ZEX9Xb3LX4BFjvduaEnoVfQDlI/FRQtdgIFqmpDvwx8885R4rbQVcqTgCbmUDOKcro+mxcBJlDCeDOCvY3/+OL4qZRJJ2M/hvG0BleKP9p3ny8AHGWovDIni71enf4CkHyjaM7FmGCiQZVJ8bEZBJvZjdt1xM7rjLJ7SQJHkG+RSbJ8niSYJww3VzvYS17hzOYjzbu/KVkbpwUoRn3aZAnpHn8EsS4LeCper/1Xzk3aCQ48PtEHsQ51mVtyN/3ZXH+UESLxa9cVhf/86q3VkBd+U9we3xy9xOmZDbv7xiMJrbSY2YOwuu9mHL2cASv8IEd4r3UZBBkkpOPNDetqY52YyIN+zcPP0uEBZ7KslK8hxO+W9CHeVjKKH+iyvoID06loDxmKjA7UyynQ3RfNEFXLP48nawM0/9lf//ilavafj4MqlO9QzIYXge2HChbImhNtTetolZ/xBFDnDGh5QZpy6QWYRv64ult6l2xQsKMknJ+0jr/w0g9RSn/1W4c4E3fypN5yGQbyRjom174p3GLVEwbElq+pPk8//gdz/+xymiY/8u/OsYt0GuIm5RMboAT2OKsBgGJOVt5qYP8aPJY2mJjVPrRytAPvD/dZZv4X+yq2ZnuqO6e9g3GKdjHAcZs7DCjcrYWCqG8+umBPn//6MP//lWEfvC/+SHl1askzutDotn2kADi7HaJcZgDDMULCIyvbHJ4eB2ermzM5wPkzipxyLSoW//+Vtcn71qrYu+eSp1A12XV++JvmbAAP7od8W7Z0a31Sl8Ltb0qKieDzOCkzHjrDidJ3kPPCie+7yi/L+nr5Fj+e6OlVcxkd59RrEoFR1WByqeGDxq0Y/+oVPl4+C4mgxvgqY9zp3U+mFE4OODItGvqQwy7dJ0occXAnmgHp7PFyZHt7uqplk0+IpEt6LMl8vIMxj2kDJEovklqNRhapEtiTustNXbm6Dt3AxZ+VC+if2Pir5Ntvnh6yFNN0AH8qjiJV7n6U6u0w2OWEfqFbCfJuPBCI1ygn4tC0xgSdpcG/954E2cFyu/U5XVG0vg+OaslT4VY1adgrheaKKRH7gPQhJdHwNl2H5r0JuOFgmtjH76P2c/xEld5NUrGWk1JKRk9Kjamf8P2yNuiCYKJWM+oKn5VpNIqLIIl4mvI01JMrYiVf4Ddl0DW4FKKiqSvmFJyV3bcaKq8NoBj9sQa1gsP6u2FIMY8OAE0J/dciVEUeTZQJMOSBY4eUUGL/wNZ/dyq6n9DAZ9qqMK34QVTzTVQ+CkEgsBRzw8AB5DERKhI07D9K/V7QFiB9cLRlxgY2Aa3VHtXIvwm3823KLb1xKLzvOOOdgi3tHw5x18KOFLx+AeEeQvFNOTuiPL7BoXbBge9ndDd9w4ewLUf4Cu0HmFudr7f9ZpNpu5LO9BSshTU+A6Lda0SOkohmPpvFxiL/Ai51/yo7QYRqarwkracW6wiql9jr0JDMP8P8Nvvj9Pxan3PmBHbJ9JxwOCR8jmSuM+zxh1iB7DnZp696/dQj+zZNU54yqPAQwjH8f0NeGbtlfpe8pinP0pzz0+HwicgqniGXKsdXNudDVKC+qJ9XAmxfXmX5bETW5EtRReA113QsYEvy8goqoKHi0STx3FbBQKJfmLBzFpgIdA7cLeO5EpKCweEeoXuXYfYW2pkBxqAczL2T9Jm/TrnQv7BBQSqe2ZvhM51r/eoUKX9NA0j8UAXYIDj+K3WsrKK2XIE9x4jXKiWdtJRyKC5L8mPRjySkCOmsfDzzGtsXlRS9lq8vbXMk3ZLam69k3Mu+dHC1Zp2CFMD2+vwsk6VCM4GIl+E3GjQogUiY9PhoLHID22Z46/COuPK6coUlE2w75AYAvDQbnaWy+yeBD7QSsJ/eUCq1y7OnBraIXgTyCZefveOR54vi6TJjZiHeiqIcugpcV15sI1Pj1xOB/8A05wm5NJSmL551Qi2wN/FvZl2tTPI/+ms0tNkVdr1OnlCtQTe52/36MBdquQR3aAZtJhepevWRc+v7g2OZHBWZwD2Unl5XTyCQITAP7tzpvE9W23h+t5TjvmgCP3AsEf3zqV+8UIxHSMhFaSx3c/7Hm1Y73E56uLHKyIjmRUVQ/MxFRRZ+vLdmWcwPZgfSeEUDk1552YW7io7imOD/fis9KoKf1tEttQKyIhvVDoFgcuzZuqbNOLCjNCWgQx7QE2Lb9X6Y1ZUjPg/4eFQvbsgLI5orqjf31nKwlSJo5XtWfR0vSqEdY2nU2rlmtrUd/glh/fyPfnvfYtx7Yyz5HU7SbVEAfb0qEu5x+AuekcMSFAEOcnt0OM74MMAGIn7lJ6AzU5zIJhMVxsEfTfrsfDds6JcG7tAHMepFhnjUekwxuP1cHVKHiyBai++UJmjhsMr2SICKbBB2wPzWbFPcDy4OLTM/CN3jr5zoH0meNfzH6bfGz0Extgg0+rtbvaz1NX3uXj4KP8XaXhRyGLqg5I649sUkRHyt5XPAJEPDecuTqLYS1E5o2ujI/+i5afU7C/u3SbgYwbzQLhJ5dVzfX0BbyCVhOHBjx1ovWsuRUW3Euz+b3Wljf9Msqgg17vLmI4EhScMnui6vWjzfRoAA1pW2TZI3sUZ48yzln66SUkrPsLbF0ajgA9c9A9GwaMcuTZKfmVxbclvdOkm7lm8RLE/lBJ9xiCOs3/32FdWBp0g5FHjZTgEzf/WUqvr1cLV1lF29PCFypHcs3LX5DXCAzc0nWMO/VKWhfxmXbI9ip0nPgmoLLhUix88G3E3oR+ew3UCz1IkvczpNCanb7JfsQHJ6j1Q/YXL5uEVg2jMEtV5+4vpQYlK1ginPfSafzmyFrgOtfQJ0GT4G5jG3Y20ZPiGHf4Os6Gvm4dOfc+DScspPqso4G59rIVOeRMnINscIKz1bGJhbVU0+uyJcuD7RUW/u4K45oz+VJdJaL9omXumKate8YOZcx9di2ppwEa2EE4bskgcBgl+JGC2fh6zYee0p0/QL/i0mX1RALE6qFrQLatmR2SmAeZImR9e7Clf/JL9obcIdcrrw7CfHehA+0kW9xivecTIcDi8vJ8hq+JQAuWJQDSLnNNN6KdOZ9Yu3i9PtynMvBBRWsfj8D64D7zL/RcZZ0u5yyGw3/caqi25rAohtqIz8bnHm9Qom6sTEzGkZl9eooOhRI5UMcKGsod30+S58JnzHcDaQsCmaNhzERnVXmrL4/P84q+P5akv3jjHdrkv+/yN7YxucvbaIwH3Kw7wADrGbmH55T/prNnMQg8KZD+d+++m2rk3Z7cp9fAHSojaWiUsBF3jHDsYGIw9LQnoPH1gePu0jupZiXE5rPzRBhn3ozmR5AYC65Gm28GE1tT2klI6voknjoiYE658KqXQrgDSptXvHXCn98xE+bqMmGqqyZ341pC41enpqatuaceggLLkZ6JsEYkM375Zzcb7n4GYAeciM+oVKk0IkD8DMY8zHfrxuPTA84Cyyc9+N8f5RXxHvEo6G7lw5U5BXmhnMZmlMkDW8b8xOiXg2DgX882rKoJjwCpeAabcNfdwdNCGuxtPGMqYuvwDQs1Emi2do7oPRzOAR8cWAGj9+et8cod9hmae8j1Xl05qyO8JR7EbX4zv6mogSeskPgA3fHr9aDXEc7D0cMrkaUHDJmo0HAVdyteb52dW7K22CKcauxq99CU6Jx4X7REjJaVqDYccQnx0nTp/C/S6iJ4KEAD4voEk4Xij63mmk+cxql44UuFd+B1pCdyjY40Shrhyv51uOIekFmtBcuaaSQ4fniA4N3UIjxnpG9UbmweS/sTHu7py5cYROMh9tZ854AgYhogsteFwm27e9uq2Gkn90RBiE8PXNEDz5IpAbFjRIK+K475D6Bkb8BCChjZN77xwmQGvpZ+j/C3c4CazOBraJuSsndTqtIEjXiRV+cPSyXdLPbDy/y2+ngDG60mImpkgLdvJ3eKBEf7i7jFQ0olCehtxlrXVqM5jjopzQIEXDWx1JECoF84nVEc6AyK1277u7Xpne5yfqMeQpW+EUwTL3809Jdr81BRT/4U9neRM4WPBY6GKzRaLvXqnzzn4uFxwfoIHrgbGB8+1S28WpXOc5Y1kCGE8uw7J2X0UJAtHZIIGwLE16vDxUs1iTIkfN6xFbIYEiF6VIz1QSS9OkUHXAAYMCwbKxSnS+21D+AeK/jGbO8g6CiE21sf21HxRMr6yvm9C7qGptom2VGvAZfu3NZfoFq9/rN9R/KC4OnfEMFfr6Ur1Mx4wnlZeC7YJ7Vb6c3YLrE+2zpHE3nRU9XiiyrzThgSQhHk5xNZVy/vcA60WFCFGWYVLQ13sAimrCamBIGbivyRltPlkMfcfxp1Gv60Gea/X47L2hjHd4JeEqcCEGNQ2QabqshxNIB/eycT62b6gH7qeK0hcAF37RRwOM/4ap7lYucPkBltUIign38JUVpqGOTH5Q3UeHXn4Skkyu0AquvYvrfb+7ahG5S5Dl6Ipq3VlwLAw/3vsAEivu2ur7Dr+uTjBqPQOW9bgR/IHDjczjbPmYeWU3kwFkQhGdnhC1pBCnoXq7lZQTDyyonmxOPMHjnsHqoyTmXs+wgrkmAjF9JTPwhHsIqoh6Nv6EIewvIvciPKKKvUckmcE7agZaKuYtGPzeWcBpQEyCAzIG1zCOa3kPglnzuCPVvR7JWn4TKubjO2IYk/xMPAtqqkJm0vJa9wO0Oj+pR/Cec3ycKLwfxfR9IrRWNN0pa6DK1DR1RdcUTQMI+SVQ6oTHM/WBS2+oD6oQ6Vu7sN+/n6vV6WOTn2p2VXk0TUfsaaG9+YN5JbyFyhyVkKLX/cRQ2Mf/1bbpWQ0mFdy5SEJJtBgTO9jK7bvnCR9oCZpGB+VCdL65+31i8vS7wRqJvCkchsoqz4E6IrUvoz7xcSuuEUOJ7C/DCsohkqgsoCh6eo9YzAlAX/9mG+dXYMwyX3iSSxejBcDWAJXRIqLZmJOyF7AeruOa4zFKk2PXjvdJHhboD8FZn/3jJfapcxt7CdIL9lLs43ywRelpvvIiVlzZMpsleK5igVlke3kvXXOzrrbJ/Y4EiH0ORHrohQNyGyqMtbAxXn/jyBuJyfT5TJPYIVa5JY3/FVbhRXeKH0GfaqfXrwXpQKg6vkbS6cOKo36/OeU5jPMWlQXr+LhPFcdqVklhpUBJ5AuBZchdilf1LeXKlUqIjftgA3x9FyEEpoD/HTT0d1UxsKYzFFCWsI3dRfIHnQ0fRjura2yAqM3JJf1nD4mp2rIbC240NSzOgxLOJr4BE26tnqX+m2R3dXQo96QMNVRgXY54/tVIg616BmpPn2i6isRmYiVemHGlDJfSKUNfKWhbu09ey5yZzGgDizXEgkGgRFuBQiCAi88CMdTMWpj2G3WQFoNFBfscBCL2KYFd4CpEWY5Pz25Cua6cpftMPLD4b+BPIjn5bLx9Hf/axv20Ou6Mv+OXX7yoaHyJy5WEEumNZ41AfshUhLUK01Gt9WiuLFoG7NDVbEHxoP45Xbj6HfP5S0ZKdN0U4v/i2xGQClB1dMvssRYygeVNaxlRaK68yPDdgZucXnoZTuEQzHLg1vKcZfb81oYGhze3mF2X42B91rjIy0xoVxOHdhsrSPF71v011+tpxTNxm5l0NBpIHjWcnCruY6T0FVg6AuJP4sTSJ6MRPVY0JOsaXihDgGiWVkwovO10sHhHXWO1e83QvsOc2ImvHKQZrQyBLOvpcapzoLDIY0bsOGkKRtTW5VpSL2wnEG2Hc/gySrjPQh38xNSUqZzc84jKSCaOF0QB+c+eyGxqmbp4Dx0tAJkii9DZ3VLjADD2u+yrRybw1viiZkjp+d4KdsBXug7LRZ2zcgA0W00ebhohZ3PmMtpKMlvkqHncRXWr5pt7/vc4lNuGOQrF1E49x+ILZY4q9YVBhlZg0TZ4Jl3oZ3fPVea4Q7EWItuk3w1iqghox3KlMn3XHHUWOgBB0XkPktqM+fA41MZrg1buq4IWdPMTSvkSBQOsDvtLKq5jr+MLw0p6/opZUvBcPpDfXhzFtz3G0Su/un7zy/BEoG++4GEWbwQN4JyqwPq45BlmxKsQgfQlNPlfq1Fi/bLIGpMzUft9VvaX/ayuPXttK/TQLCXOTeIJ+cpV2ASaousashti/IruT8ms50i4SSc8NtFMh2xBwhireOtozJYW/Rto6OLsoxpPq3qI1Qqux3PRbm+cwSeZQmWeijGychz25gdxguC4eCVQPitpkTJmWh7xn71yGiB9K4xdYn2Xa9b1SZ9ZmwvkJm6g48Dr34tEyRnndIS3xD84eZdKX69TVk/VPR3SddKPVd3blAh8ePXrKZGJq9diDmNlfM2fEzxLjhgtPY1wfARe8o7EIOA/p4bT7g16GCZCbF/GB5knSJ1TIPpv34Cx5mAlOIbCVKEbZ6uKTh5J0aa2vfYmXWx+BB1l4GdcBTDtFcDJo8B62UsrCK0UMOgZ+dcnbOea4oRyLTqtjZvjj0MB3nUoIT55tGfKnKGYGxA0dYCOt9MNlXCe1YkXmMKwn7I9/PUGgwbUm7AaZXBBel4FyaIL8213BmozCyyNyqGG8ZGW3xJCt3AGtkwZ0qyawBvolwAV8Fkq2yS8nvqfB4Kc/URW4DMXprUjho9BOE2FTFGrnraizlPxEaGMCB9bvz+NlTR7zYD3U8RZ/PdQKBZNToskM5gSMl6h5WqpFFbIjeeyNHvJ/1y7SKX5XVhl6zzUw1ModGXly22RkB42xP3Z3pw5LpVWo1JkmdQvZzRX+H8D8YRnYVdEtxXlZJjwNn9jJ5EUR04GjQ1MsiQaypu2iG623VG9xNd261ClkBiR0NW6CaCWG8WY+WKt1L+qQQ/X+zaEsObov6aeMXwduO+pj8xST8GxI5pNMnr1ae6PileKLiOwQFScHyufGR9Sz1krnPQfunr1XBQI/vR7Rwod6qc/aQKIOXh86VW2rIyn4sDDMvBnFGNutoYMpezjpoc4VEZgDsJjuOeAT/RAwmPOYgxt2G684OEcJOLEH8U2+vr9hhPhmFfpTsGrbUtAaHZX+sXozuBvgzi0/fM5fUpQ8tXs3vm9NMa/emgbrouWCgcMmMfb9l/eE7TGsS2U0fYARSF8+WC6Lo0A3g/dZlHNlJVr2KP3P6G2YTZwcvFq+xjr5c/CLs+3n+8cmY9LTuidpk7wG/QOxnVgXcp/mlopheHWEjKIQGrR8QtmH2KPnQO5pHoDFK4K85mPsNH6S04LrdojixLcqDXJYHL9W1xrDiybT3Jp7AoM4JCdQRhpNTACFY1nxkggHU+Cf7WAVMgbQuLDUYSPa4DNzPFyK0o0p0NVcVciNKDAZQ89RK3645jjF01fP/fFDZWNCqt9p3+HkOqdP/K/s+v2VrAJIol/W1qkznRSB+lbSMpxrPOZSXxf/wQq/e1HhFNIlllRhpjm0ufe1Hl7TAZ+UMoSPSBkoTrNdy0ZhPaiUNePOyv3DIgwWsNcViMlBSwK4ZbB6xSiwTanN1YA+9Ee1+oPWYZdX2jUeHtlofgsU9/DvMbUdIA/WPIHkwi5j8R5hSvoo+IpSIX4KEsZOZccYB6I0S8rz5YAPhphXrz3fSQJp7lHzBanunbrnx5Hab2PlYWupVJl3QwoCZcHW4D70AkQ4t93WdPe1U0zcSZcro3frkXUbkGIMR1oG9xxs+cyPKqh1N+NEAIU+sBxM33g450Gi/jfVQ8eQME18U08utk/3iYU7juggrqXJNB0NW0Ke5e3NX6Kuq5yaThiaeQ3BRGFmXlhynmTSdtuVP6Z83PWhovz8wx8ljChzVIp8jSiomEBExIay4+lhLim1LdS44Zc+wKb7B2RoXYhl2A4A6mj9lcHXGySBcCVPH6rYX4kJqcu5IBfe6GMMA03Iv9+kCStlHbSyd5Vjw5YNl9EuzzZ6v/pOeg1zQghQehhb0bGCDTbiJk1NcW+75a4aDpbWEr3JISmAM07tPvD9IHX1L+QSkWYu7jlERnD8ZW2G5rDogyHLDCHzffQexPeuYES0/n2hJlcxTQe2RMvJ/sabAmUdUkPUlJcAr9Ui+tp/kPVfHklWjmKVojseHkG87GVDOQgk9HNVAJMio7yTOqvUFHSftb041/cICYZ6GG5Lo1JQEEzokgxVfX4Y9wpMxeab6+Kqcf8HE7Evge4h3o3xhllhlkrSaQKu8W+hdyECxySPHqRJTLJ4PP7dcp9S7No68QYhan3rMdCmVrVSqxz73bCSXeuvkOyeznR0xI5cjhFn7GChfRsUhdx7PYDpYVkFHqo6UVWhytaV4Ei2W1oIQzc+wF9op9z7FuKZBVHLZYWmofd0UQVRj8AnlDe2/8yd9O37p8zpVVfK+Fe/tmQjozXsCZj2JkWzuJ3jBhJnB89cDzgHw22uLqG7PZCj17cqbwCmkqrQOJ61V4pqQyUI3Szo0n/2MMFi27olHxudIiVNL5FpVuteimFDdGndRp3l8kle2N+1OHQCJBS+CIzSIYFLRIxLcb9eB35a08ca5nHzoWjiEH0ZyoDbLhqKaKV4W9PLZ4MEDxxtYFDn37MIXCXj+fdXBbr9hazvrXsM4JtMEGE3IXpXhNI7nkdVVNUwYa4GSao6K21HXpixAWmGUunehQRvM1uqZ5mO6Ri8toJM2Sd5Tv9VKa3TEum2OkdTY3fZ/WxriFz3bP1zDFmVDMIljyZPeWGBpHRan/Dg2o83gsa4fbF3CFNGi2QRY0o70FDGwwGw+4LnOuFw/vQ7Hrt2rr6/3fFvxFwdQfcH15JcK0G4QEzozgX4t/XFYvJIPp9/GoFAQk8cziymUinee0Yl7zvAVgLrsR8COu3QMkw9pSHKxi4bWm+qvMrEiFVfNJXcflbThOt/ieq0Q31c0RUR0pGoMYLB7cN+Ko9BLOK9MZuKVIA4jROTHtrhmGZjf/KTcIcSBDB+p6W2RUunVkWUA2uDrnEYwXWsxVppymfgoxU4hUu4sRm/F6K3cQ2HMhwcBxGzvhr4ZYyO32ddk+o1veO5Yfd4CLEgEbuZ690oTX+4jFh9lcMUx7SxvvargfdyiWfL0K1uj6WE2Jqzx3CAK8yWrYVxXDesRae9HRN/o2Rawun2gCj9i3G5iZFAE8Ozd0+GvLbDZNbrgQVlXHKFgSWXvwOtlzffHmHFrQB6cNW5LaA3ioK0yvgaNYgPRjJwHaO0wk2fx7KZ3ZK8+WYZywGFCSaPLxl8RYIlRjNjRb0JI7sp7l+3L9mIxPJP6HCJYp9wuYTBXXg3btfWbLp72xKaK3Eet9yKBepTZKxFYxf3ddXQA9Zbp2ZvuAdXubWHHVtuj7GLM/jd30bWCNGnwqBMpuLAfZH05R4l71VoW0X1tUvzUKYc0XzaVGgdFKjRxnc//UBu8c/neX4JGOZzTpXt28kV9GofvF1M0etleVcKdrlygBIRxJkLFP+o/Z3NMBc6AMB2q1nc+PkToG9fFsSox5OyIvvB4YZYyMLzQj88NxX+XhBqR5MWKYcsxGV+DFtBzLXg4kePOTbGkN9MCoGr+ovy1n3jXVSilVxH/RRRJYRTYj/FhksO71+N61u3Sqp3pR7ith3y9ocKhXMIL/CzY229Kn6hQHAaw8FnsyW1h9XFp70BW+624tva/w8LWka5SPN73QveOsDZS0d9GCLbCN88Sg3rumd3SG3MkANo8n//59r7NdF8iq1iCU8y1aP9BuiCs8YINaBNEd1fucNqgSRf//Qn0JR5pjoPp0lU1Ico+bnR7WQYgCQyBp2ZFrcs4TH+hiuboheLYWov8qq1Zk93K2ZGT/7tBDiVaL4+ZRfbZt4TB7u0cmURrYbXlGpJ/dTosAbTQkoQhV5eZPlsXtnPDP8tynobjLx+EeOApzn+kYgwGG+hO1rUhipUWIMkbg3YckgdmOCOt9xtgfpzK96WZmDqfbcOCrCYn9Xz6mzrenye25ZXobGFxdFJuKvcrI05JwHAbK3eMNv1Up8c79ZXy4pYnWshn1ZA0VCM1i2fXrDteEdMZWWmwdfDo7AWD9rso13E1FNXnH7z2baP4+IDbquC6x3iqocydCOaKtJo6FZH1ucc3+EdLPv7a0kL6bvF751YDaJNgCwUYCi56TAS8scfMgxVhyE1NlupRq1kKG0Fgl9iC3ngRKYW3pC/mFVIti9XAxfPIrkoAdTFgx/VFB67CakluAM8F0W4TU8FfhwaE9SIIjKytEJNO81IP4/op+2cvuHvNWYqMI0hYoofzdWDUqnB0Vs4sW301RL0lcxNBPDmeVKliJ84YPlh0A7N8p8/QvEtQ2o1UEmkAKAEV5kSMzv7/Zpws3oalRe17l2Bavbn8ms/jFao3DLnxH9quEswBaeuxrriU58ryWSLMN30bm+H93TtXO++HDi+zTzCozrDEqXqbzT9Y8XseyvFCkN+e66kkCtO1p2xRjjGSNiWTfHle2+rZAfAmRvFVPNI7vJRFfOxHQQBxDO6KSqqzAYQv0VERZ5VW3wXwykQsE390wcDm1cV+RYt3otjjsayQXN8tWO30ZWLI+N71/qMHuqmmzZvWbtmesg07gmb3XJ65JpvREh8aHQBbR0rrU7FjUNNNdO9uRONH1w31GpxtLiwIYGcCBuIXrYvjwLZFg5Jktsq2vB/8WnI+yC0hWugEuIMM2PqNfD2NyKQ/6Y8ix160r28UOP5AdPbAcEBXjSIkkAcWPY+N6UldH7zgvISxTVqTs21Jg0PVES9BntEAez2qG8lUziut/ancX8zQFENFwctIIc2KqKe+JSqwjg8JjlP/kswdim4d0CwE5u+Wy2gvMALOq5zvYU5byYX6GuUw4OT/y4vTT/s3kT95Pf3rXQWi1Ef5IAlrYVhRRAkd2W/qtTqkXygOo34IFp9Eb+Oz9F+hfe6ERnNdNgwJDVM9ELe5G+rsfvEAO1sFqsCMTEshbb76bFPbeplHer3JsijcMMJDpb2DcZMMnzaGpQcQhGFm6VojRvOHtoEYg2AqsJeSLaJkY/EtQdpWUlpBn8nWguam+e4vCWmHO9QfwqKC8tCKabMAWmEiOj9S8Cwfl1vgD6s2lkFpUjzk7Vmmdi9XI8w8FxC0Gtj9/aZOTkCH+9nufff0jaRYLdXDA/qNsAlQsHlBO/m/ogHhX645LQobj0rImbVzyUiIv5fhLGh2mfY1zKgpZ4flvp0NXYZOgNsaOaBBhpBHExRXn/fvByW+CIw78eTFG7smo3J2iCg/SrKxXj//KA/RuagXcLLrpu6U8Gs8vURH3RRUbY+x22BlafiF6yCdRR9UnHPF8HkRP9Tzu/wIWJyx8DJaaj/ojjdenars02Ku6qTboroGzKPRi3hdgn1ZTJGDrFDDXn2BnowLz/s18Sjmekp5MYRM09QyM4WbHyBICLtgOUTw3dCO69JnPySCAA40DkrHaa79oxckL9AofbpoUnfDY3T/UNrPbaGnfDRYPsrONtrol3jMQ5rT9RbmMeAVka9bPi+7SBId/AhOofSdY1YYXyc4ltbDTH2333Jmve827EDcsFDaAfeyYuvszfDmgw4j+PZtcyU7NXCaCQ+S+G2NSSPbN96LkEzcYm7ZENIQgNBGzHl/qVuzjaodbOWet8ZeMsSDfVh3Dr264WfPeYpisLOHr5+n7iGYwAmIzF67UfNKaEm8pcRSIEULv133rOEcwffWZ3pPoC/gDwXir3SuNc0YbgpGWQlECetHpTTRsCGjNrqSIwPpxTiBZ4Yh7Dd8IjPZHbiJmicxPWsSVKTwz8CdRVq5wJ1H8/oEoEgWv21sPCd7PAhQtuntFvDkZLzCHwbrmpMr4hMJlS4xhXLQeMtYi+Jm0bigJ5DVb6r8KVFvQF05MCe3OH3Il+OT5yG6+ce23uap64o5ou3xP6HW67jWWXytvio9cLIeVXaDKJz6Ly9Vqj+w3sQkw4oGIsIRNSn7PVh2o+zHNsBQiLLysJdSwE2tyGcjCfQfKUf2csne7tgmKjJFCIXwPCqqMvXMaUkb1Idh1s/NoSCVXVtb7XcIoRDWPi1XsfaB4XYb4jon0odfRvQfU9yzmOsyK9ASsD/OE/U0EjaNUih8xsr0CGy029NXhKQZtfrwbg8jIXdgY/tBojxRMVOdaOvA62trGRJYkK9ZvkiQgs8nnkCKNa/qM9+DE0mZiVGuzPtuMeqd6E8km0djpsauQDY6+XiPXcnyeORe1jrKrqlcjv3afTQgBsIVqiLWCDg3q8LCzjwJll2wMv79vZIdiCy8bq/WoSymoRn8JAxT5Ms6Ja2/7YZzFPTSgK6JxbK35jSACATuTKpqgz7sdq1aCYVspYHvJB5hiBqfgX1//l5RHA++P6+Rjm6TEF4tKem3CLcQoTgE0W6OAXYpZsc1O7xNlSMyEbI9QkbXQztBI9UFgG5YYOcvZvwNGCxA93DhMh5XxtwXOM9sd6fS2pifzM0KTVGfGOF1QuA+1ZHOUPmHPez2rQ7sjZNCq1wrj6f5aAUBAFIfCd/3QrBXMboR/VvYsciGzLUVjl47w2EyUfFIpJuO9B0+xrffgaUCQEOjrk0u5YRMbiTwdVKUmUN4dwj5TwcSBEoID9splqYygciLkohER3Upm2Df22hyeFOeaUsCYBkPq9QkJditxuYdETmxdMIeQox7yNjgbQlQfke5fv0YA4pWuhR7IQrXVsVFgkPVRsX58SwZlaKvx4S/KUUe8iF5zYfaLJuVb5wLbJ/gAedNCDYkMl6CGH++b3j0SnB4bLzCYdQI3oRIDZtdx0BrrLrXN8h9YvJF6/Ktrjt/xhxy5IOoKJkQVQ9tZJO34j0tieLeaESrDJoyEiGQdBg4gxF5q8LpoRjqAShUhWUiybnGQjcQ4etm503pxFLGxe53PWQSJ+sfsseL75sa/2s3tQhANXtKX4Qc/OcxvuT2N4noz53/b57qVGMaF8AixV8wX6uFdoJw9l8XFfv43EcFEu3zvIKuxFb5mWb5ZX7a8juDMcmje7GVBcYSzY8nsAngUcjrv7CXlJLE+i8zHzplXK+Ol+BpfiNXyycO2t/0uotjaJtiog43D88C4xf6lhWSvOy82bYpK7l+S8DDTfkSH6b43Qke14+PbB34JhUPyJtltCrHsdOLx2x3psyqFP8ziQEZUBApBkGuvLPjBBBYU04kW3JbIAp2VA4qwpvlfkIu2XbA4BtEYqAg3cZwWJ/wS1Ec+XFG17W2WFG0P2El7Og8ClhpAAKl3K6VpWEKsherMZGFTBgsKnf0joc6qwgR/5WME0MKMqE9agKJT4WBN17/PgZswXtdJCSNC9lkvNax7VI8uB9LMtGTpdusphs57qKwfy6xB9uC/S5OiBLMxJ3B/22wB/PZ7ESuDjvHPR++PQAaBsnxK1Ttx7cvOK8nsyGmHsFJAgZSSMubpBfh8HUZP+bA8T84b4mI7IdKvrm4Eu56zXh0aEwob1RE3a2NS/s0ALg8vlg7S4pxzJXL65Jntgaf+OnzAU5i3gNViCuElWGfId+gxs75o9aSxNd5kEQfq0OkxQNXe6eluvxd3C9LX6Jdi3WbJolVepINw5COzjxq7jHQ+GftksDWNUwjzunFSufrFZx2lcqstu6RYxSFSWxBprUP81L4BAOb8EjXEy99prcfxSs4ho+5zzTd8jY8+xUdux8WUVHG/Szbzs+Saerxeuxa7/lEg7i2IA+l+L2e8wN2TeEMl1v4n0DqBM4T2MAF5FgD5KbR3iJ0fkIByNMskxD69ojhD8iaKrR/jVgU7KlwloNV8Op3k6v0DltWbsFvRHj31LcIUgAHwRRYGkKvSwS1jyq3L3H//LNdjXNU9uNrfw9w1S60A7NfwSDftcJwB2rSsb/TmyET78/9PHf8B024Q7QAzvpDgxEwY8bVp337HeU97T76Xvj8o2FdlJPlssHFy8oxnfmAjDJmqi4fxjawbHX/mX86P8U2jLzbeJcRHr3jlJKWQ9wykGjGSF2n/XJjrf42BdWnUcwzru6ytUGXSvznkYPNwkp8CRX1pcJJAxu+VJG9qhAPTec+jxMKq6SfuLwNsd19oblusUBlqWoU9+Rwu+H0Z7C1QEpZBReQI77ugXnHEjeMO6yyd4NGqoz+RO84a3W6C1EqTVR16UJ/8YOfAv6M6o3+GIB/lTXiy5hMOUHgx/Z1KgHm4eQJJf883glSVpKsKZb6UZt1q3FkLYQl+rvv3OY3srIkw2vyVMYwbQPdbHcO9BcZdveso+0Fqa9PS6hDPISCkyN61z2A5lqzWP6bhIRcWWp+eXa7+4F5zedBtqr8yf1474ba22m1iVZLTBNANdRxRtGFX6DpMSx4EAue+fCaVpEAV2g7GrE4rlNd6R1K7H9pGwa0akbDqB9MH8aCkiTj2ekBsQhbSYn3nfDXwEl3q1dvZ4ekSsRQ8EORHT/NR3fJiPCBv3ndBndngNGKPCCFfRcGXhEIXJ1htjSvze9UpsWW2HjOEqYGpkIXqD5/8MwBUDbSjEu86IT7Ksro8jTBel9FYwQSA3wDmpuJlv9JDERYAUxko+wmMTmLLhtAfk2hAoWerZk3WXfukkYjHMXW7GqVvQUUXkFvh5wU/LtsyNYdAOY/Id/mhefbmRMa8JCEdlYieikGTUFmPvdyU2cLs7zq60JG8/Jx8m5saNyzAamB5rlZXt5hPi+d2S84KVXzPKSABGjOmbsHblpPGIZQT1owrj0hv3Ht6ejsw3/rLsFUbDvBZxUlrR5Ok/iQ/BpVRFAIZrDhy95SOGGMnztymUiiY7NiMPVx1jLLK877IFfO8MRtfVa8W5QzhE3Is0DSBbxIXXIzUTGto6cxTU/qkECnxBuy5UhLEpX5djPu+67kBen9E9j3Z2U66w7r8RDxfs2QMFKeXRPMATq0c5MyjftVpddD1jqrH8pycuVCM8Tl0cCLL3mP5+tDzo+SDNx604GcHNPVMiKOUw4ajTQNReiIKCsLl7YuFOi92ZBTPPKPbdA2yy5dE9EFRj1Zu5Nf8CO6R1w3XoDz8Am4V/lbqhlXSTrmBoFC0DAzNt+HiTu58GQMElP2svENKcbfURuSuxF8JSqJ8Z1I5g34Y8b1AgZBodLc7GExLJi7GHjTPcro2Asl/zdTeeUAeDcHerfeV/keXjkR4CoZC7kpntdeLKZQ9b0li/6PHZn2nDGclH7LQxkXKpeIDuc+znWwnwd53RqibDlLPBVTLRraLTVcDVXG1YTYGk17dKtfGiXELDKBD3dQArauvHx7DlGooeCvX4dBnMnhOKIDYSy9Jy4/Uo2FpyFyVTsUgT5KlOOF76LOaeyhbcCXTHV9ZhmemmAM5gB3c+Z5/Mpo/B9sFyAkOqGV8VNrFjpKsthCPRiNU25g7o6rIbkYRK0kjAuQL68IGgmyXcThBG9paivFm0BxPItZtW1xbOSFsuGE1xqZrlCBA/OBrFO9WliwAfstKxizX3iL2pUoO5lB60KuEJTfHyoNgV5IJ4mz2csxsoSb9FEMHNR+fRGijJoD6j7XcJmSu/vZzp0iFXlBigtpRTg81YbYYOWRg0q+0ZYPVYRv1pZAY+RIR+NKoWMSBwlUGYxL3GFVJSsD53vFrD316m15Gz4p5mqoTrMBfivfYxEhX2B1i0j/9DvmnRSmBo2VBcn/8Rfa1uQsSQVT6PL4vgAtff5VN2OU/a3d/sAIQ0avfCI9Fa7k4qAs4Vfa/B6twOcNiMwyeYucbutqUVcjz1z0wKCkKoNtnb0Li0ZtkGosYr8YpcykOsWg77xEv0WHBveM6YWdXGKcCZn+mabhkwCo56Zz/LM24RGx3300hTnAHOyfU/a4BAcCyOOCHD2KdcZPI42RhFTzmZDzOlCq3lrIBrDGBFJyoRijHGptVS6i63E0zyaqi0C95B1ZQnQ7ody3Sz7P87WdBYN5/vNhm9py7T8382KGhoF+2HEODOjG5b/jA1C4Vgw+CQwXPbfYoCuQA7/NSNPCTED62qV6lIsCmOQDLxuQpmETBsX7D6+aIXRBcwEKTlLDp2FVJRZGpNknVoK1iSkz01BbrD+uqsf+fsLBGTPKfxiibaG4JlYIX0ArVM6w+fI9+zXT5o95BKAuKjJl5/2r36BZLIjl8OaV2POvjCUsHh7IzX+lJRKzNhNNX8odcG3DaBzU4YyFA7OJvmfKHWsNC4RbGn3pF5vbWcme5t8iy44IW/piuRVhLuSNusGgvZ9mYKpXy5vz8k3vFEa/bxk9HlGN+qZ/oeJgPTuMg5EjeZTG46bE/UOo29Tt0fQPzpDec6QokhbQ13XNGoAhjjVf6jbBm5JXPrLABP37VAPZA2FM6nigK0cbplUPDLZxJ7p7SyxHQbuID+h1dMBMCWZgD6M0twiP3WMvjtmRzx8TxBMqNETRZ/noTwr6fPJzDFUMMHptRj0wCH8qqxs39KmEHvbWybDg+B8h8UIhjaJqqhFSg3NNcAXVXy2RjxfW7OT9VRDvTUbPkm/IOc/C1AoreSMgNfdXYOzeize6TnVVEKjbGrYdLZjTPflFWOqBdvBKVlvChFnxpzT1coh4OmdvR+oTRRq8xcd9VVXboOwjvoB0O7jUm+DcxCIdTSw1lJisikGbu9KQDZFjmRo9zMlzNw3T9EZ7qO3OXPGUv6DZ0YKCAfmQAm7Lz2dvf8aCoefvVJuF0ggg8DtRqemR89y3tnHmldDF/sjOJ4kUjtV/XwIDFXhORQqmzhFLkvR7yONEI9ZKKM9nfLzM1tgSkbKFp6wFoBKnEsDcxyVvPJFzewXfGAZilIlBBJVkw/Z7BC+lGhFyUcRjVOAZVehMHAfbQDZC5ElhHoc6Osegm+cp37jimRN6ZFFURku7YjBfaF4n8Z8tg6Xr/EV9u+Oj8/4ZO7XLZuj5htZRT4kLUTbeJXMlOjxh+sGL1HJySTT3x8D83HkkjqrL+SQViL8lhMTeANXnvIH6k+0kpksI78EwebC5H2kqSJVZqB5oW7PeztNJr7dDX6MGO5RNfP41n9jtucp7iyCq17xZvNA1fEtDnQhDt+FxRDRdJ4U81cn1N5VAlltuVxfR0Uhssck1J8qFOtHQexPof+Ym6yITWJLtljWn73EYBvJDDoge9rvg93sddbec7tesMX3YR5CUeuyc5Fq/7A/ln5CZ1IEJLolazSDzCPD0o7mbygCyt0y7vv3CTaZHGO1ddvThibnsix+aoAmYAXO9L+qx0j+hAxoCbLYSy7CMLqr5YCHiddkdIHB0pWQoyI/NtuvBOwJfDrmqniEE8PsfdTgF/JZI4kXvFb0t53l50GPpylhN9SWe6O2S/lPnQAOJJFQKAQe/M9O7DwskoNl8sYbKVrnaJl0A1m3FYbBIF4tZj44O+Xwa/8VCMGPWEoDR6ruxUH0CWE3g1Hej7xGLfjwuBjVWnc/LlOGj62qKMtFlZGisyHu8U9k1DuiQXp89l2eHqXIP1yHBch/O7XFR9doIfBhudylV/B7tKyFWflp9y2lRe/PbHISPNtd9wyKaQwxh86dBtRTuK92wiZWWwi1XhNNYTLIMSPxie+U/4Dtg5yhmxqCkGfh80P+6uCKi3mYMnNqRq8MwX698gleq//69uSHoWCppLlfKH3MMv5kFOsTsnmZwrDOb48sirLAYWiud2P+kuBpY53JUPz6PL9/RziS+x2avsi4wQBzHL8BlgDOPnrvyU8KchWlTzhdOlDGGgFBv2IqCW5pGvNN2nyETIQNWSlcp+ZzSGIzyPBFwbw+5eNv/Yx7Zj6be9YPrGavZ+fVU7wtPsQ+N/cPeNvXLiOTjxRZB74GSfyDZAYnVADze/N8o51PQnt8rJv7xCrJx3l9RHpGKw8eAV/b9BbaMlC8TBnd+o9z8S8jhIGVufQXP+8xYc9zn7fdntR/qKWBTFzXAGfjL2LICRl1iQTnKl9KZUoeFW37/BdkB100QUvOmB8tu28ghldSsEvyJOKxtrqXSJIO5TlUSnGVn83FJDoT34ZVPricjg+s23xUXX6sZMAK7K/uRAL3+H+Xg/ORjyS6FhVFGFDVMD2PYJwuxNtXVoxh479Vwtby+yo5gAJoIqY7LzxbqtMf5W9F0+SVIhVE3gRT2L4uznrIW0EpQE74SP9eBlPfsOKYGoejzuouBhIUw1/1UfQFUMbZFx8c6twWe7bk59NWyYzBHzSi9UEALgE8/7RHaksmTW649Dvhx3+Y1iRy/FL+bSUAbA7gbp4T3RHUtY0lTakPU8UDD6D/6jBU8Hg1N4tYtLYL0ps/CYoRXFnjHyAQS/derBuLrV3OBuv2lWMiZoAF9zgEAtSzrovNH0bNarWINks+6vl83wW5uEkpxjQCgy79DN82GVc8KxOMGd9Cvmnwrhe6CPvzza5cw89fGS4sS3iKlSLBm8kmeNGLFFFvyXHyBK6p3Bv0KWtrP7b/7bTey0zzKPvkmTOx5UfmpWARoJfEttFf+FAKB+3kiP07+r45x6CV94uInSlh7FLlotFEfCrSqYp/xH0+e3szSY/OR9kT4qqZY2LFf7wkKradj5qOX05mBxbrnfVd+tJfzbdTkJyD+ffpIvVUcXswzTh0wDUNaWOz9X8l/MxBQ3e+TTvq0E33T8uGS3BSPHpPEk1ZV+5/5DdCIHh1a/wyM4SlMo6Lqi9sGIF6Ubl4dD6isqW2YswbR2HYHsuPk8sso6CN+IaQG5Tpa28dv+hXdobpXim8Z3Grj8VqtTE1w9iZ/StrzA3ycBfxPIrRJVB5Ej3W+0U8yVu77XWlHTN2NczoAS15Uy5P5jTHpmcjx0XHzRTVYk8T1aoqjYmoQPL2D59M74KdOH6BZVKLpLrW+xOAVknpZyGqSZgtilbwbPIJOJlekpKZqO4Of4f/dSm8DO9UcbpN4TEwS6jjBHm8fpjVcn0TZUIQ2iMLZgUsMseQMEmdGIFwiEtv7zD/ahu6h89BXLEcMUMXTrqoqa+jjhAIjgNSqs835BcCoSlup15S9T1z7+cKOTD0VNi9dYMt87oVsXcd52D1UMXu+Ipqgc54wkQiY51LphL7vS2zqngXaxwu4KqGt0nhGGZUC9uWQ9bpg8SYlmmCO+Jeo/O7az/l6qpobzpm6VsZgnPusk1aGRjSpB8he058idEGvkdzhi4BacTSteoSE5XnYTM1Rc8DWV1h2pi3Rn5E0pplOb3yHakt9o0F0f+TLBG1l8XPUZQrz1IjQT0dI4Lru3GYtAUDIIWsVJVDP2qzvPHcdekDqfa/w/P61lnvKZPbE9kQRdH8G7/ug0g06td+wqWf2FwkfEG1ARtoi1+ddd4+Dhiro1DPbmBzx7ID+LwlyFuD/kDoXow5yD19mvjr4YuGt7U/JeIF1n5aHVth+DkUDdpLgYpr6415MMb0M6Gb6f1YRFSk1s1J+mvmguIxWR2hrZN4atPwH+5aMCv8OGKcgKEF/AP5c07tWD0VHjUPTJNhUgT0SFc8+wT1odr1lTkAbJ7+Hh8G1dAp0sqBpM8Grz0ujIWh9Z1XaPTmOKQiswGs6urfssffeZHSisi8eovj9c7+KVY5LZhVb/vxDPm1Em+X5rQULcEcj3++QGKrrQPtFJUpR+A+mE/BCyWG3OmoAAA==";
-  const smartImg = "https://images.pexels.com/photos/373543/pexels-photo-373543.jpeg";
+  // Solid, small icon URLs that should load
+  const ICONS = {
+    car: "https://cdn-icons-png.flaticon.com/512/743/743007.png",
+    driver: "https://cdn-icons-png.flaticon.com/512/1077/1077063.png",
+    passenger: "https://cdn-icons-png.flaticon.com/512/3448/3448334.png",
+    mapPin: "https://cdn-icons-png.flaticon.com/512/684/684908.png",
+    star: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+  };
 
-  const features = [
-    { img: driversImg, title: "Drivers", desc: "Share trips & earn money." },
-    { img: passengersImg, title: "Passengers", desc: "Save costs & travel safely." },
-    { img: smartImg, title: "Smart Matching", desc: "Rides matched efficiently." },
-  ];
-
-  const stats = [
-    { value: 10000, label: "Rides Shared" },
-    { value: 50000, label: "Happy Users" },
-    { value: 200, label: "CO₂ Saved" },
-  ];
-
-  const fadeUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
-  const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.2 } } };
+  // small animation variants
+  const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
+  const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.12 } } };
 
   return (
-    <div className="px-6 md:px-12 pt-32 bg-gray-900 min-h-screen text-white">
-      {/* Hero with background image */}
-      <motion.div
-        className="relative w-full h-96 rounded-3xl overflow-hidden shadow-xl mb-16"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <img
-          src={driversImg} // External hero image
-          alt="Hero"
-          className="absolute inset-0 w-full h-full object-cover"
-          loading="lazy"
-        />
-        <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center text-center px-4">
-          <motion.h1
-            className="text-5xl md:text-7xl font-extrabold text-white"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            Carpool Connect
-          </motion.h1>
-          <motion.p
-            className="mt-4 text-lg md:text-xl max-w-2xl text-gray-200"
-            animate={{ y: [0, -5, 0] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            Affordable. Eco-friendly. Smarter commuting. Share rides, save money, and protect the planet 🌍.
-          </motion.p>
+    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-emerald-50 text-gray-800">
+      {/* HERO */}
+      <header className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 py-28 md:py-36">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+              <h1 className="text-4xl md:text-6xl font-extrabold text-sky-800 leading-tight">
+                Share rides. Save money. Connect Kenya. <span className="block text-teal-600">Every trip matters.</span>
+              </h1>
+              <p className="mt-6 max-w-xl text-lg text-gray-600">
+                Find or offer rides across Nairobi, Mombasa, Kisumu and beyond — quick matching, verified drivers,
+                friendly passengers, and safer trips for everyone.
+              </p>
+
+              <div className="mt-8 flex flex-col sm:flex-row sm:items-center sm:gap-4">
+                <Link
+                  to="/offer"
+                  className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-teal-600 hover:bg-teal-700 text-white font-semibold shadow-lg"
+                >
+                  Offer a Ride 🚗
+                </Link>
+
+                <Link
+                  to="/find"
+                  className="mt-3 sm:mt-0 inline-flex items-center justify-center px-6 py-3 rounded-full border border-gray-200 hover:bg-white bg-white text-gray-800 font-semibold shadow-sm"
+                >
+                  Find a Ride 🔎
+                </Link>
+              </div>
+
+              <div className="mt-10">
+                <div className="bg-white/80 dark:bg-gray-900/30 p-5 rounded-2xl shadow-md max-w-2xl">
+                  <SearchBar from={from} to={to} setFrom={setFrom} setTo={setTo} onSearch={handleSearch} />
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}>
+              <div className="relative w-full h-80 md:h-96 rounded-3xl shadow-xl overflow-hidden bg-gradient-to-br from-sky-100 to-emerald-100 p-6">
+                {/* Large spaced icons — arranged visually */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <motion.img
+                    src={ICONS.car}
+                    alt="car"
+                    className="absolute left-6 bottom-6 w-28 md:w-36"
+                    animate={{ x: [0, 18, 0], rotate: [0, 3, -3, 0] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.img
+                    src={ICONS.driver}
+                    alt="driver"
+                    className="absolute top-8 left-20 w-20 md:w-24"
+                    animate={{ y: [0, -12, 0] }}
+                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  />
+                  <motion.img
+                    src={ICONS.passenger}
+                    alt="passenger"
+                    className="absolute top-20 right-12 w-20 md:w-24"
+                    animate={{ y: [0, 10, 0] }}
+                    transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+                  />
+
+                  <div className="absolute right-6 top-6 bg-white/80 rounded-xl p-4 shadow-md w-40">
+                    <h3 className="font-semibold text-sky-800">Popular Routes</h3>
+                    <ul className="mt-2 text-sm text-gray-600">
+                      <li className="flex items-center gap-2"><img src={ICONS.mapPin} className="w-4" alt="pin" /> Nairobi → Mombasa</li>
+                      <li className="flex items-center gap-2"><img src={ICONS.mapPin} className="w-4" alt="pin" /> Nairobi → Kisumu</li>
+                      <li className="flex items-center gap-2"><img src={ICONS.mapPin} className="w-4" alt="pin" /> Nakuru → Eldoret</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="relative z-10 h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <h4 className="text-sky-800 font-bold text-2xl">Kenya-wide carpooling</h4>
+                    <p className="mt-3 text-gray-600 max-w-xs mx-auto">Fast matching, safe profiles and door-to-door routes.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </header>
 
-      {/* Search */}
-      <motion.div className="mb-16" variants={fadeUp} initial="hidden" animate="visible">
-        <SearchBar from={from} to={to} setFrom={setFrom} setTo={setTo} onSearch={handleSearch} />
-      </motion.div>
+      {/* FEATURES */}
+      <motion.section className="py-24" variants={stagger} initial="hidden" animate="visible">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-bold text-sky-700 mb-6">What we offer</motion.h2>
+          <motion.p variants={fadeUp} className="text-gray-600 max-w-3xl">
+            Tools for drivers and passengers — post routes, find nearby rides, view driver ratings, and chat securely.
+          </motion.p>
 
-      {/* Features with images */}
-      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16" variants={stagger} initial="hidden" animate="visible">
-        {features.map((f, i) => (
-          <motion.div
-            key={i}
-            variants={fadeUp}
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="relative rounded-2xl overflow-hidden shadow-lg cursor-pointer"
-          >
-            <img src={f.img} alt={f.title} className="w-full h-64 object-cover" loading="lazy" />
-            <div className="absolute inset-0 bg-black/40 flex flex-col justify-end p-6">
-              <h3 className="text-2xl font-bold">{f.title}</h3>
-              <p className="text-gray-200">{f.desc}</p>
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <motion.div variants={fadeUp}>
+              <FeatureCard
+                icon={ICONS.driver}
+                title="Drivers"
+                desc="Post trips, manage seats, earn on your routes."
+                color="teal"
+              />
+            </motion.div>
+
+            <motion.div variants={fadeUp}>
+              <FeatureCard
+                icon={ICONS.passenger}
+                title="Passengers"
+                desc="Search rides, compare times, book instantly."
+                color="sky"
+              />
+            </motion.div>
+
+            <motion.div variants={fadeUp}>
+              <FeatureCard
+                icon={ICONS.car}
+                title="Smart Matching"
+                desc="Route-based matching minimizes detours and time."
+                color="green"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </motion.section>
+
+      {/* DRIVERS SHOWCASE */}
+      <section className="py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-6">
+          <h3 className="text-3xl font-bold text-sky-700 mb-6">Featured Drivers</h3>
+          <p className="text-gray-600 mb-8 max-w-3xl">Verified drivers nearby — choose vehicles and profiles you trust.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { name: "Alex Mwangi", rating: 4.9, route: "Nairobi → Mombasa", car: ICONS.car },
+              { name: "Fatuma Noor", rating: 4.8, route: "Nairobi → Kisumu", car: ICONS.car },
+              { name: "Peter Odhiambo", rating: 4.7, route: "Nakuru → Eldoret", car: ICONS.car },
+            ].map((d, i) => (
+              <motion.div key={i} whileHover={{ y: -6 }} className="bg-sky-50 rounded-2xl p-6 shadow-lg">
+                <div className="flex items-center gap-4">
+                  <img src={d.car} alt="car" className="w-20 h-20 object-contain" />
+                  <div>
+                    <h4 className="font-semibold text-lg">{d.name}</h4>
+                    <p className="text-sm text-gray-600">{d.route}</p>
+                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-700">
+                      <img src={ICONS.star} alt="star" className="w-4" />
+                      <span className="font-medium">{d.rating}</span>
+                      <span className="text-gray-500">· 24 trips</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex gap-3">
+                  <Link to="/profile" className="px-4 py-2 rounded-lg bg-white border text-sm">View profile</Link>
+                  <Link to="/book" className="px-4 py-2 rounded-lg bg-teal-600 text-white text-sm">Book a seat</Link>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PASSENGERS SHOWCASE */}
+      <section className="py-28">
+        <div className="max-w-7xl mx-auto px-6">
+          <h3 className="text-3xl font-bold text-sky-700 mb-6">Passengers & Community</h3>
+          <p className="text-gray-600 mb-8">Passengers who regularly carpool and keep great reviews.</p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {["Grace", "Moses", "Sandra", "John"].map((p, i) => (
+              <motion.div key={i} whileHover={{ scale: 1.03 }} className="bg-white rounded-2xl p-6 shadow-sm flex flex-col items-center">
+                <img src={ICONS.passenger} alt="p" className="w-20 h-20 mb-3" />
+                <strong>{p}</strong>
+                <p className="text-sm text-gray-500 mt-1">Frequent rider</p>
+                <div className="mt-3 text-xs text-gray-600">Joined 2023</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MAP ROUTES (iframe quick preview) */}
+      <section className="py-28 bg-sky-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div>
+              <h3 className="text-3xl font-bold text-sky-700 mb-4">Map & Routes — Kenya</h3>
+              <p className="text-gray-600 mb-6">
+                Quick preview of routes (interactive map available in ride details). This preview uses OpenStreetMap tiles for a lightweight
+                in-page map without extra packages.
+              </p>
+
+              <ul className="space-y-3 text-gray-700">
+                <li className="flex items-start gap-3">
+                  <img src={ICONS.mapPin} alt="" className="w-5 mt-1" />
+                  Nairobi ↔ Mombasa — major intercity route
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src={ICONS.mapPin} alt="" className="w-5 mt-1" />
+                  Nairobi ↔ Kisumu — frequent commuter corridor
+                </li>
+                <li className="flex items-start gap-3">
+                  <img src={ICONS.mapPin} alt="" className="w-5 mt-1" />
+                  Nakuru ↔ Eldoret — regional connectors
+                </li>
+              </ul>
             </div>
-          </motion.div>
-        ))}
-      </motion.div>
 
-      {/* Stats */}
-      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-16 text-center" variants={stagger} initial="hidden" animate="visible">
-        {stats.map((s, i) => (
-          <motion.div
-            key={i}
-            variants={fadeUp}
-            whileHover={{ scale: 1.1 }}
-            className="bg-gray-800/70 p-6 rounded-2xl shadow-lg backdrop-blur-md"
-          >
-            <StatsCounter target={s.value} label={s.label} />
-          </motion.div>
-        ))}
-      </motion.div>
+            <div className="rounded-2xl overflow-hidden shadow-lg">
+              {/* Use a small embedded OSM map centered on Kenya (no npm package required) */}
+              <iframe
+                title="kenya-map"
+                src="https://www.openstreetmap.org/export/embed.html?bbox=33.46%2C-1.46%2C40.23%2C4.92&layer=mapnik"
+                className="w-full h-72 border-0"
+                loading="lazy"
+              />
+              <div className="p-3 bg-white text-sm text-gray-600">Map data © OpenStreetMap contributors</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="py-28">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h3 className="text-3xl font-bold text-sky-700 mb-6">What people say</h3>
+          <p className="text-gray-600 mb-10 max-w-3xl mx-auto">Real feedback from drivers and passengers who saved time and money using the app.</p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { text: "Saved 40% on fuel this month — friendly riders and great chats.", name: "Anne — Driver" },
+              { text: "Quickly found a ride to Kisumu, on time and safe.", name: "Joseph — Passenger" },
+              { text: "Verified drivers and transparent pricing make it easy.", name: "Lydia — Passenger" },
+            ].map((t, i) => (
+              <motion.blockquote key={i} whileHover={{ scale: 1.03 }} className="bg-white p-6 rounded-2xl shadow-sm text-left">
+                <p className="text-gray-700">“{t.text}”</p>
+                <footer className="mt-4 text-sm font-semibold text-sky-700">{t.name}</footer>
+              </motion.blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* STATS */}
+      <section className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <StatsCounter />
+        </div>
+      </section>
 
       {/* CTA */}
-      <motion.div className="flex flex-col md:flex-row gap-6 justify-center mb-32" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-        <Link
-          to="/offer"
-          className="px-10 py-4 rounded-3xl font-bold text-lg shadow-2xl text-white bg-gradient-to-r from-green-400 to-blue-500 hover:from-blue-500 hover:to-green-400 transition-all transform hover:-translate-y-1 hover:scale-105"
-        >
-          Offer a Ride
-        </Link>
-        <Link
-          to="/find"
-          className="px-10 py-4 rounded-3xl font-bold text-lg shadow-2xl text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 transition-all transform hover:-translate-y-1 hover:scale-105"
-        >
-          Find a Ride
-        </Link>
-      </motion.div>
+      <footer className="py-20 bg-gradient-to-r from-emerald-100 via-sky-50 to-emerald-100">
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h4 className="text-4xl font-extrabold text-sky-800 mb-4">Ready to ride with your community?</h4>
+          <p className="text-gray-700 mb-8 max-w-3xl mx-auto">Offer a seat or join a driver — make travel affordable and friendly.</p>
+
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link to="/offer" className="px-8 py-3 rounded-full bg-teal-600 text-white font-semibold shadow">Offer a Ride</Link>
+            <Link to="/find" className="px-8 py-3 rounded-full bg-sky-600 text-white font-semibold shadow">Find a Ride</Link>
+            <Link to="/download" className="px-8 py-3 rounded-full border border-gray-200 bg-white font-semibold">Get the App</Link>
+          </div>
+
+          <p className="mt-8 text-xs text-gray-500">© {new Date().getFullYear()} Carpool — Built for Kenyan commuters</p>
+        </div>
+      </footer>
     </div>
   );
 }

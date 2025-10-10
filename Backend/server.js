@@ -1,5 +1,4 @@
-// server.js
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
 import session from "express-session";
 import passport from "passport";
@@ -12,29 +11,41 @@ import userRoutes from "./routes/users.js";
 
 const app = express();
 
+// ---------- ENV DETECTION ----------
+const isProduction = process.env.NODE_ENV === "production";
+
+// Auto-select frontend URLs
+const FRONTEND_URL = isProduction
+  ? "https://willowy-haupia-6fb17a.netlify.app" // Netlify frontend
+  : "http://localhost:5174"; // Local Vite dev server
+
+const BACKEND_URL = isProduction
+  ? "https://carpool-1-wrch.onrender.com" // Render backend
+  : "http://localhost:5000"; // Local backend
+
 // ---------- CORS CONFIG ----------
 const allowedOrigins = [
-  "http://localhost:4173", // local dev
-  "https://willowy-haupia-6fb17a.netlify.app" // main production Netlify domain
+  FRONTEND_URL,
+  "http://localhost:5174", // fallback if Vite switches ports
+  "https://willowy-haupia-6fb17a.netlify.app", // production
 ];
 
-// Use cors() with dynamic origin checking
 app.use(
   cors({
     origin: (origin, callback) => {
       if (
-        !origin || // allow non-browser requests (e.g. Postman)
+        !origin ||
         allowedOrigins.includes(origin) ||
-        origin.endsWith("--willowy-haupia-6fb17a.netlify.app") // any Netlify preview deploy
+        origin.endsWith("--willowy-haupia-6fb17a.netlify.app")
       ) {
         callback(null, true);
       } else {
-        console.warn("❌ Blocked CORS request from origin:", origin);
+        console.warn("❌ Blocked CORS request from:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // allow cookies/sessions across sites
+    credentials: true,
   })
 );
 
@@ -48,8 +59,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      sameSite: "none", // allow Netlify ↔ Render cookies
-      secure: process.env.NODE_ENV === "production", // HTTPS only in production
+      sameSite: isProduction ? "none" : "lax",
+      secure: isProduction, // HTTPS only in production
       httpOnly: true,
     },
   })
@@ -80,4 +91,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚗 Backend running on port ${PORT}`);
+  console.log(`🌍 Frontend URL: ${FRONTEND_URL}`);
+  console.log(`⚙️ Mode: ${isProduction ? "Production" : "Development"}`);
 });
