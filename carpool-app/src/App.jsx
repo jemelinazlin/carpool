@@ -8,7 +8,7 @@ import OfferRide from "./pages/OfferRide";
 import FindRide from "./pages/FindRide";
 import ProfileDashboard from "./pages/ProfileDashboard"; // ✅ Updated
 import RideDetails from "./pages/RideDetails";
-import EditProfile from "./pages/EditProfile"; // Keep this as a page
+import EditProfile from "./pages/Editprofile"; // Keep this as a page
 
 import Login from "./context/Login";
 import Register from "./context/Register";
