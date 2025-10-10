@@ -1,4 +1,3 @@
-// server.js
 import 'dotenv/config';
 import express from "express";
 import cors from "cors";
@@ -15,27 +14,28 @@ app.use(express.json());
 
 // ---------- CORS ----------
 const allowedOrigins = [
-  "http://localhost:4173", // your Vite dev server
-  "https://willowy-haupia-6fb17a.netlify.app", // deployed frontend
-  process.env.FRONTEND_URL, // optional override
+  "http://localhost:4173", // Vite dev
+  "https://68e85a14b8c2e700085e1d99--willowy-haupia-6fb17a.netlify.app", // Netlify frontend
+  process.env.FRONTEND_URL, // optional override from env
 ].filter(Boolean);
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin (like curl or Postman)
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`❌ CORS blocked for origin: ${origin}`);
-        callback(new Error(`CORS blocked for origin: ${origin}`));
-      }
-    },
-    credentials: true, // allow cookies/auth headers
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (!origin || allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin || "");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+    );
+    if (req.method === "OPTIONS") return res.sendStatus(204); // preflight
+    next();
+  } else {
+    console.warn(`❌ CORS blocked for origin: ${origin}`);
+    res.status(403).json({ error: "CORS blocked" });
+  }
+});
 
 // ---------- SESSION ----------
 app.use(
@@ -44,8 +44,8 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      sameSite: "none", // needed for cross-site cookies
-      secure: process.env.NODE_ENV === "production", // only secure in prod (Render)
+      sameSite: "none", // cross-site
+      secure: process.env.NODE_ENV === "production",
     },
   })
 );

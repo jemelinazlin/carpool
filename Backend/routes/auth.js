@@ -10,9 +10,12 @@ import { verifyToken } from "../middleware/auth.js";
 const router = express.Router();
 
 // ---------- CONFIG ----------
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:4173";
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 const GOOGLE_CALLBACK_URL = `${BACKEND_URL}/auth/google/callback`;
+
+// ✅ JWT Secret from env
+const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 
 router.use((req, res, next) => {
   res.setHeader("Content-Type", "application/json");
@@ -90,7 +93,10 @@ passport.use(
           return done(new Error("No email found in Google profile"), null);
         }
 
-        let user = await getDB().get("SELECT * FROM users WHERE email = ?", [profile.emails[0].value]);
+        let user = await getDB().get(
+          "SELECT * FROM users WHERE email = ?",
+          [profile.emails[0].value]
+        );
 
         if (!user) {
           const result = await getDB().run(
