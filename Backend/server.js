@@ -1,6 +1,6 @@
+// server.js
 import 'dotenv/config';
 import express from "express";
-import cors from "cors";
 import session from "express-session";
 import passport from "passport";
 
@@ -10,32 +10,34 @@ import rideRoutes from "./routes/rides.js";
 import userRoutes from "./routes/users.js";
 
 const app = express();
-app.use(express.json());
 
-// ---------- CORS ----------
-const allowedOrigins = [
-  "http://localhost:4173", // Vite dev
-  "https://68e85a14b8c2e700085e1d99--willowy-haupia-6fb17a.netlify.app", // Netlify frontend
-  process.env.FRONTEND_URL, // optional override from env
+// ---------- CONFIG ----------
+const FRONTEND_ORIGINS = [
+  "http://localhost:4173", // dev frontend
+  "https://68e85d48bd9b1607365df791--willowy-haupia-6fb17a.netlify.app", // deployed frontend
+  process.env.FRONTEND_URL, // optional env override
 ].filter(Boolean);
 
+// ---------- CORS MIDDLEWARE ----------
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  if (!origin || allowedOrigins.includes(origin)) {
-    res.header("Access-Control-Allow-Origin", origin || "");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-    res.header(
+  if (FRONTEND_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested-With, Content-Type, Accept, Authorization"
     );
-    if (req.method === "OPTIONS") return res.sendStatus(204); // preflight
-    next();
-  } else {
-    console.warn(`❌ CORS blocked for origin: ${origin}`);
-    res.status(403).json({ error: "CORS blocked" });
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   }
+
+  // Preflight OPTIONS request
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
 });
+
+// ---------- JSON PARSER ----------
+app.use(express.json());
 
 // ---------- SESSION ----------
 app.use(
@@ -44,8 +46,9 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      sameSite: "none", // cross-site
-      secure: process.env.NODE_ENV === "production",
+      sameSite: "none", // for cross-site cookies (Netlify ↔ Render)
+      secure: process.env.NODE_ENV === "production", // only true on HTTPS
+      httpOnly: true,
     },
   })
 );
@@ -67,7 +70,7 @@ app.use("/users", userRoutes);
 
 // ---------- ERROR HANDLER ----------
 app.use((err, req, res, next) => {
-  console.error("🔥 Server Error:", err.message);
+  console.error("🔥 Server Error:", err);
   res.status(500).json({ error: err.message });
 });
 
