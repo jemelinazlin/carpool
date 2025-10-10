@@ -1,0 +1,9 @@
+{
+  "platforms": {
+    "android": {
+      "icon": {
+        "source": "./public/pwa-512x512.png"
+      }
+    }
+  }
+}
