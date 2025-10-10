@@ -1,3 +1,4 @@
+// db.js
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
 import path from "path";
@@ -23,12 +24,12 @@ export async function initDB() {
 
     CREATE TABLE IF NOT EXISTS rides (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      driver_id INTEGER NOT NULL,
+      user_id INTEGER NOT NULL,
       origin TEXT NOT NULL,
       destination TEXT NOT NULL,
       time TEXT NOT NULL,
       seats INTEGER NOT NULL,
-      FOREIGN KEY(driver_id) REFERENCES users(id)
+      FOREIGN KEY(user_id) REFERENCES users(id)
     );
   `);
 
