@@ -1,4 +1,4 @@
-// context/AuthContext.jsx
+// src/context/AuthContext.jsx
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 
@@ -9,9 +9,10 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ API URL from Vite environment variable
+  // Backend URL from .env
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+  // ---------- Load user/token from localStorage ----------
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     const savedUser = localStorage.getItem("user");
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // ---------- LOGIN ----------
+  // ---------- Local Login ----------
   const login = async (email, password) => {
     try {
       const res = await axios.post(`${API_URL}/auth/login`, { email, password });
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ---------- REGISTER ----------
+  // ---------- Local Register ----------
   const register = async (name, email, phone, password) => {
     try {
       const res = await axios.post(`${API_URL}/auth/register`, { name, email, phone, password });
@@ -58,12 +59,12 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // ---------- GOOGLE LOGIN ----------
+  // ---------- Google Login ----------
   const loginWithGoogle = () => {
     window.location.href = `${API_URL}/auth/google`;
   };
 
-  // ---------- LOGOUT ----------
+  // ---------- Logout ----------
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -72,7 +73,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, register, loginWithGoogle, logout, loading }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, login, register, loginWithGoogle, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

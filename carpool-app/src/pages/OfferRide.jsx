@@ -1,7 +1,6 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
-import { motion } from "framer-motion";
 
 export default function OfferRide() {
   const { user, token, loading } = useContext(AuthContext);
@@ -15,9 +14,10 @@ export default function OfferRide() {
 
   const API_URL = `${import.meta.env.VITE_API_URL}/rides`;
 
+  // ✅ Fetch user's rides only when token exists
   useEffect(() => {
     if (!token) return;
-    // fetch user's rides
+
     axios
       .get(API_URL, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => setRides(res.data))
@@ -52,17 +52,14 @@ export default function OfferRide() {
     }
   };
 
-  if (loading)
-    return <p className="text-center mt-6">Loading...</p>;
-
-  if (!user || !token)
-    return <p className="text-center mt-6">Please login to offer rides.</p>;
+  if (loading) return <p className="text-center mt-6">Loading...</p>;
+  if (!user || !token) return <p className="text-center mt-6">Please login to offer rides.</p>;
 
   return (
     <div className="p-6 max-w-xl mx-auto space-y-6">
       <h2 className="text-2xl font-bold text-center">Offer a Ride</h2>
 
-      <motion.form onSubmit={handleSubmit} className="space-y-3">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <input
           value={pickup}
           onChange={(e) => setPickup(e.target.value)}
@@ -89,10 +86,13 @@ export default function OfferRide() {
           onChange={(e) => setSeats(Number(e.target.value))}
           className="w-full p-3 border rounded-xl"
         />
-        <button type="submit" className="w-full bg-teal-500 text-white p-3 rounded-xl">
+        <button
+          type="submit"
+          className="w-full bg-teal-500 text-white p-3 rounded-xl"
+        >
           Post Ride
         </button>
-      </motion.form>
+      </form>
 
       {success && <p className="text-green-600 text-center">Ride posted successfully!</p>}
 

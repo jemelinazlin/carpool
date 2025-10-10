@@ -1,4 +1,3 @@
-// routes/auth.js
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -6,7 +5,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 
 import { getDB } from "../db.js";
-import { JWT_SECRET, verifyToken } from "../middleware/auth.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -15,7 +14,13 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
 const GOOGLE_CALLBACK_URL = `${BACKEND_URL}/auth/google/callback`;
 
+router.use((req, res, next) => {
+  res.setHeader("Content-Type", "application/json");
+  next();
+});
+
 // ---------- LOCAL AUTH ----------
+
 // Register
 router.post("/register", async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -71,7 +76,7 @@ router.get("/me", verifyToken, async (req, res) => {
   }
 });
 
-// ---------- GOOGLE AUTH (JWT) ----------
+// ---------- GOOGLE AUTH ----------
 passport.use(
   new GoogleStrategy(
     {
@@ -81,6 +86,10 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        if (!profile.emails || !profile.emails.length) {
+          return done(new Error("No email found in Google profile"), null);
+        }
+
         let user = await getDB().get("SELECT * FROM users WHERE email = ?", [profile.emails[0].value]);
 
         if (!user) {
@@ -106,7 +115,6 @@ router.get(
   passport.authenticate("google", { session: false, failureRedirect: `${FRONTEND_URL}/login` }),
   (req, res) => {
     const token = jwt.sign({ id: req.user.id, email: req.user.email }, JWT_SECRET, { expiresIn: "1h" });
-    // Redirect to frontend with token
     res.redirect(`${FRONTEND_URL}/login?token=${token}`);
   }
 );

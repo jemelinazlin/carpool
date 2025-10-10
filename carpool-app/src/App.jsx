@@ -39,48 +39,56 @@ export default function App() {
 
               <main className="flex-1 p-4 md:p-8 overflow-x-auto">
                 <Routes>
-                  <Route path="/" element={<Home />} />
+  <Route path="/" element={<Home />} />
 
-                  <Route
-                    path="/offer"
-                    element={
-                      <ProtectedRoute>
-                        <OfferRide />
-                      </ProtectedRoute>
-                    }
-                  />
+  <Route
+    path="/offer"
+    element={
+      <ProtectedRoute>
+        <OfferRide />
+      </ProtectedRoute>
+    }
+  />
 
-                  <Route path="/find" element={<FindRide />} />
+  <Route
+    path="/find"
+    element={
+      <ProtectedRoute>
+        <FindRide />
+      </ProtectedRoute>
+    }
+  />
 
-                  <Route
-                    path="/profile"
-                    element={
-                      <ProtectedRoute>
-                        <Profile />
-                      </ProtectedRoute>
-                    }
-                  />
-                  <Route
-                    path="/edit-profile"
-                    element={
-                      <ProtectedRoute>
-                        <EditProfile />
-                      </ProtectedRoute>
-                    }
-                  />
+  <Route
+    path="/profile"
+    element={
+      <ProtectedRoute>
+        <Profile />
+      </ProtectedRoute>
+    }
+  />
+  <Route
+    path="/edit-profile"
+    element={
+      <ProtectedRoute>
+        <EditProfile />
+      </ProtectedRoute>
+    }
+  />
 
-                  <Route
-                    path="/ride/:id"
-                    element={
-                      <ProtectedRoute>
-                        <RideDetails />
-                      </ProtectedRoute>
-                    }
-                  />
+  <Route
+    path="/ride/:id"
+    element={
+      <ProtectedRoute>
+        <RideDetails />
+      </ProtectedRoute>
+    }
+  />
 
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                </Routes>
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
+</Routes>
+
               </main>
 
               <Footer />

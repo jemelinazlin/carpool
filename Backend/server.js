@@ -15,22 +15,24 @@ app.use(express.json());
 
 // ---------- CORS ----------
 const allowedOrigins = [
-  "http://localhost:5173", // local dev
-  process.env.FRONTEND_URL || "https://willowy-haupia-6fb17a.netlify.app", // deployed frontend
-];
+  "http://localhost:4173", // your Vite dev server
+  "https://willowy-haupia-6fb17a.netlify.app", // deployed frontend
+  process.env.FRONTEND_URL, // optional override
+].filter(Boolean);
 
 app.use(
   cors({
-    origin: function(origin, callback) {
-      console.log("Request origin:", origin);
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like curl or Postman)
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn(`❌ CORS blocked for origin: ${origin}`);
         callback(new Error(`CORS blocked for origin: ${origin}`));
       }
     },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // allow cookies/auth headers
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
@@ -41,6 +43,10 @@ app.use(
     secret: process.env.SESSION_SECRET || "supersecret",
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      sameSite: "none", // needed for cross-site cookies
+      secure: process.env.NODE_ENV === "production", // only secure in prod (Render)
+    },
   })
 );
 
@@ -51,10 +57,22 @@ app.use(passport.session());
 await initDB();
 
 // ---------- ROUTES ----------
+app.get("/", (req, res) => {
+  res.send("✅ Carpool backend is running");
+});
+
 app.use("/auth", authRoutes);
 app.use("/rides", rideRoutes);
 app.use("/users", userRoutes);
 
+// ---------- ERROR HANDLER ----------
+app.use((err, req, res, next) => {
+  console.error("🔥 Server Error:", err.message);
+  res.status(500).json({ error: err.message });
+});
+
 // ---------- PORT ----------
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚗 Backend running at port ${PORT}`));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚗 Backend running on port ${PORT}`);
+});

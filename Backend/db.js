@@ -1,11 +1,14 @@
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import path from "path";
+import { fileURLToPath } from "url";
 
 let db;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export async function initDB() {
   db = await open({
-    filename: "carpool.db",
+    filename: path.join(__dirname, "carpool.db"),
     driver: sqlite3.Database,
   });
 
@@ -33,5 +36,6 @@ export async function initDB() {
 }
 
 export function getDB() {
+  if (!db) throw new Error("Database not initialized. Call initDB() first.");
   return db;
 }

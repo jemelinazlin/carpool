@@ -1,24 +1,28 @@
+// src/components/Sidebar.jsx
 import { useContext } from "react";
-import { ThemeContext } from "../context/ThemeContext";
-import { Moon, Sun, Car, MapPin, User, Home, X } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 import { Link, useLocation } from "react-router-dom";
+import { Home, MapPin, User, Car, X, Moon, Sun } from "lucide-react";
+import { ThemeContext } from "../context/ThemeContext";
 
 export default function Sidebar({ isOpen, onClose }) {
   const location = useLocation();
+  const { user } = useContext(AuthContext);
   const { darkMode, setDarkMode } = useContext(ThemeContext);
 
-  // Sidebar nav items — only static routes
   const navItems = [
-    { name: "Home", path: "/", icon: <Home className="w-5 h-5" /> },
-    { name: "Offer Ride", path: "/offer", icon: <MapPin className="w-5 h-5" /> },
-    { name: "Find Ride", path: "/find", icon: <MapPin className="w-5 h-5" /> },
-    { name: "Profile", path: "/profile", icon: <User className="w-5 h-5" /> },
-    // Removed Ride Details — it needs a dynamic ID
+    { name: "Home", path: "/", icon: <Home /> },
+    ...(user
+      ? [
+          { name: "Offer Ride", path: "/offer", icon: <MapPin /> },
+          { name: "Find Ride", path: "/find", icon: <MapPin /> },
+          { name: "Profile", path: "/profile", icon: <User /> },
+        ]
+      : []),
   ];
 
   return (
     <>
-      {/* Overlay for mobile */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-40 z-20 md:hidden transition-opacity ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -32,11 +36,7 @@ export default function Sidebar({ isOpen, onClose }) {
       >
         <div className="p-6 flex items-center gap-2">
           <Car className="w-8 h-8 text-teal-500" />
-          <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            Carpool
-          </span>
-
-          {/* Close button only on mobile */}
+          <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">Carpool</span>
           <button
             className="md:hidden ml-auto text-gray-800 dark:text-gray-100 hover:text-teal-500 transition"
             onClick={onClose}
@@ -54,12 +54,11 @@ export default function Sidebar({ isOpen, onClose }) {
                 key={item.name}
                 to={item.path}
                 onClick={onClose}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all duration-300 cursor-pointer
-                  ${
-                    isActive
-                      ? "bg-teal-500 text-white shadow-lg"
-                      : "text-gray-700 dark:text-gray-300 hover:bg-teal-100 dark:hover:bg-teal-700 hover:text-teal-600 dark:hover:text-white"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all duration-300 cursor-pointer ${
+                  isActive
+                    ? "bg-teal-500 text-white shadow-lg"
+                    : "text-gray-700 dark:text-gray-300 hover:bg-teal-100 dark:hover:bg-teal-700 hover:text-teal-600 dark:hover:text-white"
+                }`}
               >
                 {item.icon}
                 <span className="text-sm md:text-base">{item.name}</span>
