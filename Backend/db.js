@@ -31,6 +31,15 @@ export async function initDB() {
       seats INTEGER NOT NULL,
       FOREIGN KEY(user_id) REFERENCES users(id)
     );
+
+    CREATE TABLE IF NOT EXISTS bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ride_id INTEGER NOT NULL,
+      user_id INTEGER NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY(ride_id) REFERENCES rides(id),
+      FOREIGN KEY(user_id) REFERENCES users(id)
+    );
   `);
 
   console.log("📦 Database initialized");
